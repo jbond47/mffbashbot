@@ -76,7 +76,7 @@ while (true); do
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
  fi
- PAUSETIME=$(shuf -i8-10 -n1)
+ PAUSETIME=$(shuf -i10-15 -n1)
  touch "$STATUSFILE"
  # remove lingering cookies
  rm $COOKIEFILE 2>/dev/null
@@ -376,7 +376,7 @@ while (true); do
 
  if grep -q "redeempuzzlepacks = 1" $CFGFILE; then
   redeemPuzzlePartsPacks
-  sed -i 's/redeempuzzlepacks = 1/redeempuzzlepacks = 0/' $CFGFILE
+  #sed -i 's/redeempuzzlepacks = 1/redeempuzzlepacks = 0/' $CFGFILE
  fi
 
  if grep -q "dobutterflies = 1" $CFGFILE; then
