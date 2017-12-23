@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install script for Harrys My Free Farm Bash Bot on Cygwin
+# Install script for Harrys My Free Farm Bash Bot (Mod) on Cygwin
 
 LCONF=/etc/lighttpd/lighttpd.conf
 LMODS=/etc/lighttpd/modules.conf
@@ -7,9 +7,9 @@ LCGICONF=/etc/lighttpd/conf.d/cgi.conf
 BOTGUIROOT=/var/www/html/mffbashbot
 
 cd
-echo "Downloading Harrys MFF Bash Bot..."
+echo "Downloading Harrys MFF Bash Bot (Mod)..."
 rm -f master.zip 2>/dev/null
-wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
+wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
 unzip -q master.zip

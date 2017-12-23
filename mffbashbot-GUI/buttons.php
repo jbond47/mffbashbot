@@ -88,6 +88,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"megafieldplanttoggle\" name=\"megafieldplanttoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['megafieldplantafterharvest'];
 print "</td></tr>";
 print "<tr><td>";
+print "<input type=\"checkbox\" id=\"redeemseedboxtoggle\" name=\"redeemseedboxtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['redeemdailyseedboxbonuses'];
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"lot1\">" . $strings['lot'] . "</option>\n";
@@ -187,5 +190,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['megafieldinstantplant'];
 if ($savedValue == '1')
  print "document.getElementById('megafieldplanttoggle').checked = true;\n";
+$savedValue = $configContents['redeemseedboxbonuses'];
+if ($savedValue == '1')
+ print "document.getElementById('redeemseedboxtoggle').checked = true;\n"; 
 print "</script>\n";
 ?>

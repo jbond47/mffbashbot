@@ -22,8 +22,8 @@ echo "Installing needed packages..."
 sudo apt-get install jq lighttpd $PHPV screen logrotate cron unzip nano
 
 cd
-echo "Downloading Harrys MFF Bash Bot..."
-wget --no-check-certificate "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
+echo "Downloading Harrys MFF Bash Bot (Mod)..."
+wget --no-check-certificate "https://github.com/jbond47/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
 unzip -q master.zip

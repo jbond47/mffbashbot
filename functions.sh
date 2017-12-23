@@ -62,6 +62,11 @@ function GetWindMillData {
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
 }
 
+function GetPanData {
+ local sFile=$1
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=showpan&farm=1&position=0"
+}
+
 function GetInnerInfoData {
  local sFile=$1
  local iFarm=$2
@@ -1639,6 +1644,58 @@ function redeemPuzzlePartsPacks {
     SendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
    done
   done
+ fi
+}
+
+function check_PanBonus {
+ echo "Checking for daily bonuses..."
+ GetPanData "$FARMDATAFILE"
+ local TODAY=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
+ 
+ # Hero Sheep Bonus
+ if [ $($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE) -eq 12 ]; then # requires all 12 super sheep
+  local LASTBONUSHEROS=$($JQBIN '.datablock[11].lastbonus.heros' $FARMDATAFILE)
+  echo -n "Hero sheep..."
+  if [ $TODAY -gt $LASTBONUSHEROS ]; then
+   echo "available, redeem it..."
+   SendAJAXFarmRequest "type=heros&mode=paymentitemcollection_bonus"
+  else
+   echo ""
+  fi
+ fi
+
+ # Horror Sheep Bonus
+ if [ $($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE) -eq 9 ]; then # requires all 9 horror sheep
+  local LASTBONUSHORROR=$($JQBIN '.datablock[11].lastbonus.horror' $FARMDATAFILE)
+  echo -n "Horror sheep..."
+  if [ $TODAY -gt $LASTBONUSHORROR ]; then
+   echo "available, redeem it..."
+   SendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
+  else
+   echo ""
+  fi
+ fi
+
+ # Portal Rabbit Points
+ if [ $($JQBIN '.datablock[1].gifts | has("289")' $FARMDATAFILE) == "true" ]; then
+  echo -n "Portal rabbit..."
+  if [ $($JQBIN '.datablock[1].gifts."289" | has("giver")' $FARMDATAFILE) == "true" ]; then
+   echo "available, redeem it..."
+   SendAJAXCityRequest "city=0&mode=giverpresent&id=289"
+  else
+   echo "" 
+  fi
+ fi
+
+ # Bug Rogers Points
+ if [ $($JQBIN '.datablock[1].gifts | has("410")' $FARMDATAFILE) == "true" ]; then
+  echo -n "Bug Rogers..."
+  if [ $($JQBIN '.datablock[1].gifts."410" | has("giver")' $FARMDATAFILE) == "true" ]; then
+   echo "available, redeem it..."
+   SendAJAXCityRequest "city=0&mode=giverpresent&id=410"
+  else
+   echo ""
+  fi
  fi
 }
 
