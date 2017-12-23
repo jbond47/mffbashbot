@@ -149,20 +149,45 @@ function saveMisc() {
 
  var v = document.getElementById("careplushy");
  sData += v.options[v.selectedIndex].value + "&puzzlepartstoggle=";
-
- document.getElementById('puzzlepartstoggle').checked ? sData += "1&farmiestoggle=" : sData += "0&farmiestoggle=";
- document.getElementById('farmiestoggle').checked ? sData += "1&forestryfarmiestoggle=" : sData += "0&forestryfarmiestoggle=";
- document.getElementById('forestryfarmiestoggle').checked ? sData += "1&munchiestoggle=" : sData += "0&munchiestoggle=";
- document.getElementById('munchiestoggle').checked ? sData += "1&flowerfarmiestoggle=" : sData += "0&flowerfarmiestoggle=";
- document.getElementById('flowerfarmiestoggle').checked ? sData += "1&correctqueuenumtoggle=" : sData += "0&correctqueuenumtoggle=";
- document.getElementById('correctqueuenumtoggle').checked ? sData += "1&ponyenergybartoggle=" : sData += "0&ponyenergybartoggle=";
- document.getElementById('ponyenergybartoggle').checked ? sData += "1&redeempuzzlepartstoggle=" : sData += "0&redeempuzzlepartstoggle=";
- document.getElementById('redeempuzzlepartstoggle').checked ? sData += "1&butterflytoggle=" : sData += "0&butterflytoggle=";
- document.getElementById('butterflytoggle').checked ? sData += "1&deliveryeventtoggle=" : sData += "0&deliveryeventtoggle=";
- document.getElementById('deliveryeventtoggle').checked ? sData += "1&megafieldplanttoggle=" : sData += "0&megafieldplanttoggle=";
- document.getElementById('megafieldplanttoggle').checked ? sData += "1&olympiaeventtoggle=" : sData += "0&olympiaeventtoggle=";
- document.getElementById('olympiaeventtoggle').checked ? sData += "1&redeemdailyseedboxtoggle=" : sData += "0&redeemdailyseedboxtoggle=";
- document.getElementById('redeemdailyseedboxtoggle').checked ? sData += "1" : sData += "0";
+ document.getElementById('puzzlepartstoggle').checked ? 
+ 
+ sData += "1&farmiestoggle=" : sData += "0&farmiestoggle=";
+ document.getElementById('farmiestoggle').checked ?
+ 
+ sData += "1&forestryfarmiestoggle=" : sData += "0&forestryfarmiestoggle=";
+ document.getElementById('forestryfarmiestoggle').checked ?
+ 
+ sData += "1&munchiestoggle=" : sData += "0&munchiestoggle=";
+ document.getElementById('munchiestoggle').checked ?
+ 
+ sData += "1&flowerfarmiestoggle=" : sData += "0&flowerfarmiestoggle=";
+ document.getElementById('flowerfarmiestoggle').checked ?
+ 
+ sData += "1&correctqueuenumtoggle=" : sData += "0&correctqueuenumtoggle=";
+ document.getElementById('correctqueuenumtoggle').checked ?
+ 
+ sData += "1&ponyenergybartoggle=" : sData += "0&ponyenergybartoggle=";
+ document.getElementById('ponyenergybartoggle').checked ?
+ 
+ sData += "1&redeempuzzlepartstoggle=" : sData += "0&redeempuzzlepartstoggle=";
+ document.getElementById('redeempuzzlepartstoggle').checked ?
+ 
+ sData += "1&butterflytoggle=" : sData += "0&butterflytoggle=";
+ document.getElementById('butterflytoggle').checked ?
+ 
+ sData += "1&deliveryeventtoggle=" : sData += "0&deliveryeventtoggle=";
+ document.getElementById('deliveryeventtoggle').checked ?
+ 
+ sData += "1&megafieldplanttoggle=" : sData += "0&megafieldplanttoggle=";
+ document.getElementById('megafieldplanttoggle').checked ?
+ 
+ sData += "1&olympiaeventtoggle=" : sData += "0&olympiaeventtoggle=";
+ document.getElementById('olympiaeventtoggle').checked ?
+ 
+ sData += "1&redeemdailyseedboxtoggle=" : sData += "0&redeemdailyseedboxtoggle=";
+ document.getElementById('redeemdailyseedboxtoggle').checked ?
+ 
+ sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);
