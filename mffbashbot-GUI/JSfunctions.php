@@ -160,8 +160,9 @@ function saveMisc() {
  document.getElementById('redeempuzzlepartstoggle').checked ? sData += "1&butterflytoggle=" : sData += "0&butterflytoggle=";
  document.getElementById('butterflytoggle').checked ? sData += "1&deliveryeventtoggle=" : sData += "0&deliveryeventtoggle=";
  document.getElementById('deliveryeventtoggle').checked ? sData += "1&megafieldplanttoggle=" : sData += "0&megafieldplanttoggle=";
- document.getElementById('megafieldplanttoggle').checked ? sData += "1&redeemseedboxtoggle=" : sData += "0&redeemseedboxtoggle";
- document.getElementById('redeemseedboxtoggle').checked ? sData += "1" : sData += "0";
+ document.getElementById('megafieldplanttoggle').checked ? sData += "1&olympiaeventtoggle=" : sData += "0&olympiaeventtoggle=";
+ document.getElementById('olympiaeventtoggle').checked ? sData += "1&redeemdailyseedboxtoggle=" : sData += "0&redeemdailyseedboxtoggle=";
+ document.getElementById('redeemdailyseedboxtoggle').checked ? sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);
@@ -190,10 +191,9 @@ switch (sFarm) {
   if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
   if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups"];
 
 for (k = 0; k <= (fmpos.length - 1); k++) {
-// old (fmpos.length > 3 ? 3 : 2)
  var i = fmpos[k];
  sData += document.getElementById("queue" + i)[0].value + " "; // queue file name
  sData += document.getElementById("queue" + i)[1].value + " "; // building type

@@ -4,6 +4,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 Harrys My Free Farm Bash Bot Mod uses official version number and is extended with mod version number.
 
+## [2.00-mod.1.0.1] - 2017-12-23
+
+Update to latest official bot v2.00
+
+### Changed
+
+- Merged Mod into official v2.00. This required some changes to the code.
+
+### Untested
+
+- Get daily bonus for Horror Sheep
+
 ## [1.98-mod.1.0.0] - 2017-12-23
 
 Based on offical v1.98

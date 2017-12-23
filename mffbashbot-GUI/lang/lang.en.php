@@ -59,6 +59,8 @@ $strings['puzzlepartredeem'] = 'Redeem puzzle parts packs';
 $strings['butterflypointbonus'] = 'Collect butterfly points bonus';
 $strings['onehourdelivery'] = 'Delivery event: do the hour drive';
 $strings['megafieldplantafterharvest'] = 'Fast planting on mega field';
-$strings['redeemdailyseedboxbonuses'] = 'Redeem daily seed box bonuses';
+$strings['powerups'] = 'Power-Ups';
+$strings['refillolympiaenergy'] = 'Olympic/Winter-Event: Refill energy';
+$strings['dailyseedboxredeem'] = 'Redeem daily seed box bonuses';
 // $strings[''] = '';
 ?>

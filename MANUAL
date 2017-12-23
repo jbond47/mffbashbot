@@ -38,9 +38,13 @@ mffbashbot.sh farm-logon-name
 Password, server-no. & language have to be set in config.ini within your
 farm folder.
 
-A start procedure may look like this:
+A start procedure might look like this:
 harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ ./mffbashbot.sh farm0815
+
+Or like this:
+harry@testbox:~$ cd
+harry@testbox:~$ ./startallbots.sh
 
 The bot can handle multiple farms. The 'screen' program can help you operate
 multiple farms on one screen. Find info on what 'screen' is and how to use it
@@ -151,6 +155,8 @@ a new one. Careful: This might cost Coins!
 The bot determines plucking-readiness of trees only by one single tree:
 The top left one. That's why you can not have the bot plant different trees
 in one go.
+
+You may activate power-ups in Pondsville using two queues.
 
 The farm name has to be unique. This means server independently unique.
 
