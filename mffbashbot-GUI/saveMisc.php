@@ -43,8 +43,7 @@ $configContents['dobutterflies'] = $_POST["butterflytoggle"];
 $configContents['dodeliveryevent'] = $_POST["deliveryeventtoggle"];
 $configContents['megafieldinstantplant'] = $_POST["megafieldplanttoggle"];
 $configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
-$configContents['redeemdailyseedboxbonuses'] = $_POST["redeemdailyseedboxtoggle"];
-
+$configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

@@ -21,6 +21,7 @@ cd $1 || exit 1
 
 # variables
 VERSION=$(cat ../version.txt)
+VERSIONMOD=$(cat ../version-mod.txt)
 LOGFILE=mffbot.log
 OUTFILE=mffbottemp.html
 COOKIEFILE=mffcookies.txt
@@ -70,8 +71,8 @@ while (true); do
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
  fi
- if [ "$VERSION" != "$(cat ../version.txt)" ]; then
-  echo "Version change detected, restarting bot..."
+ if [ "$VERSION" != "$(cat ../version.txt)" ] || [ "$VERSIONMOD" != "$(cat ../version-mod.txt)" ]; then
+  echo "Version change detected. Restarting bot..."
   sleep 3
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
@@ -80,13 +81,13 @@ while (true); do
  if [ -f dontrunbot ]; then
   echo -n "Time stamp: "
   date "+%A, %d. %B %Y - %H:%Mh"
-  echo "Run blocker detected, pausing $PAUSETIME mins..."
+  echo "Run blocker detected. Pausing $PAUSETIME mins..."
   echo "---"
   sleep ${PAUSETIME}m
   continue
  fi
  if [ -f restartbot ]; then
-  echo "Restart flag detected, restarting bot..."
+  echo "Restart flag detected. Restarting bot..."
   rm -f restartbot
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
@@ -101,7 +102,7 @@ while (true); do
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
- echo "Running Harrys My Free Farm Bash Bot (Mod) $VERSION"
+ echo "Running Harrys My Free Farm Bash Bot (Mod) $VERSION-$VERSIONMOD"
  echo "Getting a token to MFF server ${MFFSERVER}"
  MFFTOKEN=$(wget -nv -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
  echo "Login to MFF server ${MFFSERVER} with username $MFFUSER"
@@ -415,7 +416,8 @@ while (true); do
   check_OlympiaEvent
  fi
 
- if grep -q "redeemdailyseedboxbonuses = 1" $CFGFILE; then
+ if grep -q "doseedbox = 1" $CFGFILE; then
+  echo "Checking for points bonus from seed box..."
   check_PanBonus
  fi
 

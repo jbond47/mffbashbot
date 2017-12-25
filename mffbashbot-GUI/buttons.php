@@ -39,7 +39,7 @@ $togglesarray = [
 "dodeliveryevent" => "deliveryeventtoggle",
 "doolympiaevent" => "olympiaeventtoggle",
 "megafieldinstantplant" => "megafieldplanttoggle",
-"redeemdailyseedboxbonuses" => "redeemdailyseedboxtoggle"
+"doseedbox" => "redeemdailyseedboxtoggle"
 ];
 
 $toggledesc = [

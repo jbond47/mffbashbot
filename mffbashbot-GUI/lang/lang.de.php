@@ -61,6 +61,6 @@ $strings['onehourdelivery'] = 'Liefer-Event: Einstundenfahrt durchführen';
 $strings['megafieldplantafterharvest'] = 'Schnelles Anpflanzen auf dem Güterhof';
 $strings['powerups'] = 'Power-Ups';
 $strings['refillolympiaenergy'] = 'Olympia/Winter-Event: Energie auffüllen';
-$strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einlösen';
+$strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einsammeln';
 // $strings[''] = '';
 ?>

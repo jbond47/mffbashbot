@@ -4,6 +4,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 Harrys My Free Farm Bash Bot Mod uses official version number and is extended with mod version number.
 
+## [2.01-mod.1.0.3] - 2017-12-25
+
+### Fixed
+
+- Daily bonus for Super and Horror sheep now works even when you never redeemed it before
+
+### Added
+
+- Mod version output on console
+
+### Changed
+
+- Merged official v2.01
+
+- Seed box Horror Sheep bonus is now tested and verified
+
+### Removed
+
+- Get daily bonuses for Hero Sheep, Horror Sheep, Portal Rabbit and Bug Rogers. These features are merged into Harrys official Bot (with some code cleanup thanks to Harry)
+
 ## [2.00-mod.1.0.2] - 2017-12-23
 
 ### Changed

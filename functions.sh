@@ -1410,7 +1410,7 @@ function get_AnimalsFastestCureForDisease {
       # Humpeln
       ;;
    4) echo 303
-      # Röhrhusten
+      # R�hrhusten
       ;;
    5) echo 303
       # Fieber
@@ -1422,13 +1422,13 @@ function get_AnimalsFastestCureForDisease {
       # Magengrummeln
       ;;
    8) echo 307
-      # Sehschwäche
+      # Sehschw�che
       ;;
    9) echo 307
       # Rote Augen
       ;;
    10) echo 309
-      # Grüner Schnupfen
+      # Gr�ner Schnupfen
       ;;
    11) echo 309
       # Kopfschmerz
@@ -1449,7 +1449,7 @@ function get_AnimalsFastestCureForDisease {
       # Appetitlosigkeit
       ;;
    17) echo 315
-      # Hörschwäche
+      # H�rschw�che
       ;;
    18) echo 315
       # Juckende Haut
@@ -1491,7 +1491,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbares Fieber
       ;;
    31) echo 328
-      # Furchtbarer Röhrhusten
+      # Furchtbarer R�hrhusten
       ;;
    32) echo 329
       # Furchtbares Magengrummeln
@@ -1506,7 +1506,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbar Rote Augen
       ;;
    36) echo 333
-      # Furchtbare Sehschwäche
+      # Furchtbare Sehschw�che
       ;;
    37) echo 335
       # Furchtbar Wacklige Beine
@@ -1515,13 +1515,13 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbarer Kopfschmerz
       ;;
    39) echo 336
-      # Furchtbar Grüner Schnupfen
+      # Furchtbar Gr�ner Schnupfen
       ;;
    40) echo 338
       # Furchtbare Magenverstimmung
       ;;
    41) echo 338
-      # Furchtbar Weißer Schnupfen
+      # Furchtbar Wei�er Schnupfen
       ;;
    42) echo 338
       # Furchtbar Rote Flecken
@@ -1536,7 +1536,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbar Juckende Haut
       ;;
    46) echo 342
-      # Furchtbare Hörschwäche
+      # Furchtbare H�rschw�che
       ;;
    47) echo 345
       # Furchtbarer Haarausfall
@@ -1686,53 +1686,63 @@ function redeemPuzzlePartsPacks {
 }
 
 function check_PanBonus {
- echo "Checking for daily bonuses..."
+ # function by jbond47, adapted by HB to reflect coding style
  GetPanData "$FARMDATAFILE"
- local TODAY=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
- 
+ local iToday=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
+ local iNumSheep=$($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE)
+ local iLastBonus
+ local bValue
  # Hero Sheep Bonus
- if [ $($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE) -eq 12 ]; then # requires all 12 super sheep
-  local LASTBONUSHEROS=$($JQBIN '.datablock[11].lastbonus.heros' $FARMDATAFILE)
+ if [ $iNumSheep -eq 12 ]; then # requires all 12 super sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.heros' $FARMDATAFILE)
+  if [ $iLastBonus = "null" ]; then
+   iLastBonus=0
+  fi
   echo -n "Hero sheep..."
-  if [ $TODAY -gt $LASTBONUSHEROS ]; then
-   echo "available, redeem it..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
    SendAJAXFarmRequest "type=heros&mode=paymentitemcollection_bonus"
   else
-   echo ""
+   echo "already claimed"
   fi
  fi
-
  # Horror Sheep Bonus
- if [ $($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE) -eq 9 ]; then # requires all 9 horror sheep
-  local LASTBONUSHORROR=$($JQBIN '.datablock[11].lastbonus.horror' $FARMDATAFILE)
+ iNumSheep=$($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE)
+ if [ $iNumSheep -eq 9 ]; then # requires all 9 horror sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.horror' $FARMDATAFILE)
+  if [ $iLastBonus = "null" ]; then
+   iLastBonus=0
+  fi
   echo -n "Horror sheep..."
-  if [ $TODAY -gt $LASTBONUSHORROR ]; then
-   echo "available, redeem it..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
    SendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
   else
-   echo ""
+   echo "already claimed"
   fi
  fi
-
  # Portal Rabbit Points
- if [ $($JQBIN '.datablock[1].gifts | has("289")' $FARMDATAFILE) == "true" ]; then
+ bValue=$($JQBIN '.datablock[1].gifts | has("289")' $FARMDATAFILE)
+ if [ "$bValue" = "true" ]; then
   echo -n "Portal rabbit..."
-  if [ $($JQBIN '.datablock[1].gifts."289" | has("giver")' $FARMDATAFILE) == "true" ]; then
-   echo "available, redeem it..."
+  bValue=$($JQBIN '.datablock[1].gifts."289" | has("giver")' $FARMDATAFILE)
+  if [ "$bValue" = "true" ]; then
+   echo "available, claiming it..."
    SendAJAXCityRequest "city=0&mode=giverpresent&id=289"
   else
-   echo "" 
+   echo "already claimed"
   fi
  fi
-
  # Bug Rogers Points
- if [ $($JQBIN '.datablock[1].gifts | has("410")' $FARMDATAFILE) == "true" ]; then
+ bValue=$($JQBIN '.datablock[1].gifts | has("410")' $FARMDATAFILE)
+ if [ "$bValue" = "true" ]; then
   echo -n "Bug Rogers..."
-  if [ $($JQBIN '.datablock[1].gifts."410" | has("giver")' $FARMDATAFILE) == "true" ]; then
+  bValue=$($JQBIN '.datablock[1].gifts."410" | has("giver")' $FARMDATAFILE)
+  if [ "$bValue" = "true" ]; then
    echo "available, redeem it..."
    SendAJAXCityRequest "city=0&mode=giverpresent&id=410"
   else
-   echo ""
+   echo "already claimed"
   fi
  fi
 }
