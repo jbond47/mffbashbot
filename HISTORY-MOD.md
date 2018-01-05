@@ -1,8 +1,22 @@
-# Harrys My Free Farm Bash Bot Mod - Changelog
+# Harry's My Free Farm Bash Bot Mod - Changelog
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
-Harrys My Free Farm Bash Bot Mod uses official version number and is extended with mod version number.
+Version numbering in this mod uses Harry's My Free Farm Bash Bot version number with extended mod version number.
+
+## [2.02-mod.1.0.4] - 2018-01-05
+
+### Added
+
+- Based on your player level, the bot now skips several operations
+
+- Handle munchies sitting at tables on farmers market
+
+### Changed
+
+- Merged official v2.02
+
+- Minor documentation updates
 
 ## [2.01-mod.1.0.3] - 2017-12-25
 
