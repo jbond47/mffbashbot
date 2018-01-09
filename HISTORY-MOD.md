@@ -2,15 +2,27 @@
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
-Version numbering in this mod uses Harry's My Free Farm Bash Bot version number with extended mod version number.
+Version numbering in this mod uses Harry's My Free Farm Bash Bot version number, extended with a mod version number.
 
-## [2.02-mod.1.0.4] - 2018-01-05
+## [2.03-mod.1.0.5] - 2018-01-09
+
+### Added
+
+- Optimized food world handling of munchies sitting at tables
+
+- Output player level on console
+
+### Changed
+
+- Merged official v2.03
+
+## [2.01-mod.1.0.4] - 2018-01-05
 
 ### Added
 
 - Based on your player level, the bot now skips several operations
 
-- Handle munchies sitting at tables on farmers market
+- Handle munchies sitting at tables in food world
 
 ### Changed
 
