@@ -130,7 +130,7 @@ function updateBotStatus() {
 function saveMisc() {
  var i, v;
  var aOptions = ['lottoggle', 'vehiclemgmt5', 'vehiclemgmt6', 'carefood',
- 'caretoy', 'careplushy'];
+ 'caretoy', 'careplushy', 'freegardenspeedupfarm'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',

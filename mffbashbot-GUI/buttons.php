@@ -119,6 +119,17 @@ print "<option value=\"9\" id=\"vehicle9\">" . $strings['helicopter'] . "</optio
 print "<option value=\"10\" id=\"vehicle10\">" . $strings['hotairballoon'] . "</option></select>&nbsp;" . $strings['autotransport6'];
 print "</td></tr>";
 print "<tr><td>";
+print "<select id=\"freegardenspeedupfarm\" name=\"freegardenspeedupfarm\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"freegardensppedupusefarm0\">Sleep</option>\n";
+print "<option value=\"1\" id=\"freegardensppedupusefarm1\">" . $strings['farm1'] . "</option>\n";
+print "<option value=\"2\" id=\"freegardensppedupusefarm2\">" . $strings['farm2'] . "</option>\n";
+print "<option value=\"3\" id=\"freegardensppedupusefarm3\">" . $strings['farm3'] . "</option>\n";
+print "<option value=\"4\" id=\"freegardensppedupusefarm4\">" . $strings['farm4'] . "</option>\n";
+print "<option value=\"5\" id=\"freegardensppedupusefarm5\">" . $strings['farm5'] . "</option>\n";
+print "<option value=\"6\" id=\"freegardensppedupusefarm6\">" . $strings['farm6'] . "</option></select>&nbsp;" . $strings['freegardenspeedupfarmtext'];
+print "</td></tr>";
+
+print "<tr><td>";
 print "<select id=\"carefood\" name=\"carefood\" onchange=\"saveMisc();\">";
 // dirty coding so getElementById() can find id "o0"
 print "<option value=\"0\" id=\"o0\">Sleep</option>\n";
@@ -155,6 +166,9 @@ print "document.getElementById('vehiclemgmt5').selectedIndex = document.getEleme
 $savedValue = $configContents['vehiclemgmt6'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt6').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['freegardenspeedupfarm'];
+$savedValue = "freegardensppedupusefarm" . $savedValue;
+print "document.getElementById('freegardenspeedupfarm').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
 $savedValue = $configContents['dolot'];
 $savedValue = "lot" . $savedValue;
 print "document.getElementById('lottoggle').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";

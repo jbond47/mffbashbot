@@ -4,6 +4,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 Version numbering in this mod uses Harry's My Free Farm Bash Bot version number, extended with a mod version number.
 
+## [2.04-mod.1.0.6] - 2018-01-18
+
+### Added
+
+- New option: Claim daily 10 minute growth bonus on one field on a farm of your choice. Thank you to tooway for the Bulgarian translation of this option.
+
+### Changed
+
+- Several jq queries changed. There is a bug in jq under cygwin which causes jq to crash and create a "jq.exe.stackdump" file when you query a non existing value.
+
+- Code optimizations
+
+### Untested
+- Changes to megafield "check empty harvest device" function to possibly prevent multiple buying of harvest device
+
 ## [2.04-mod.1.0.5] - 2018-01-15
 
 ### Changed

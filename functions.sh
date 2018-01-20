@@ -757,6 +757,10 @@ function harvest_MegaField {
    iPlot=1
   fi
   check_MegaFieldEmptyHarvestDevice $iHarvestDevice
+  if [ $? -ne 0 ]; then
+   echo "Error while checking for empty harvest device. Cannot continue."
+   return
+  fi
   if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
    echo -n "Harvesting Mega Field plot ${iPlot}..."
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
@@ -1255,14 +1259,23 @@ function get_MegaFieldHarvesterDelay {
 
 function check_MegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
- local iDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability' $FARMDATAFILE 2>/dev/null)
- if [ "$iDurability" = "null" ] || [ -z "$iDurability" ]; then
+ local iDurability
+ local iFlag=0
+ iDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability' $FARMDATAFILE)
+ local iErrorlevel=$?
+ if [ $iErrorlevel -eq 0 ] && [ "$iDurability" = "null" ]; then
   # buy a brand new one if empty
   echo "Buying new vehicle #${iHarvestDevice}..."
   SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
   # update farm data in order to prevent permanent re-buy during harvest phase
   GetFarmData $FARMDATAFILE
+  iFlag=0
+ elif [ $iErrorlevel -ne 0 ]; then
+  echo "JQ errorlevel: ${iErrorlevel}. iDurability contains: ${iDurability}"
+  GetFarmData $FARMDATAFILE
+  iFlag=1
  fi
+ return $iFlag
 }
 
 function check_MegaFieldProductIsHarvestable {
@@ -1356,6 +1369,10 @@ function harvest_MegaField2x2 {
    return
   fi
   check_MegaFieldEmptyHarvestDevice $iHarvestDevice
+  if [ $? -ne 0 ]; then
+   echo "Error while checking for empty harvest device. Cannot continue."
+   return
+  fi
   if ! ((iPlot % 11)); then
    iPlot=$((iPlot+1))
    # prevent harvesting of last column

@@ -62,5 +62,12 @@ $strings['megafieldplantafterharvest'] = 'Schnelles Anpflanzen auf dem Güterhof
 $strings['powerups'] = 'Power-Ups';
 $strings['refillolympiaenergy'] = 'Olympia/Winter-Event: Energie auffüllen';
 $strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einsammeln';
+$strings['freegardenspeedupfarmtext'] = 'Täglichen 10 Min Bonus auf Wachstumsdauer einlösen';
+$strings['farm1'] = 'Farm 1';
+$strings['farm2'] = 'Farm 2';
+$strings['farm3'] = 'Farm 3';
+$strings['farm4'] = 'Farm 4';
+$strings['farm5'] = 'Farm 5';
+$strings['farm6'] = 'Farm 6';
 // $strings[''] = '';
 ?>
