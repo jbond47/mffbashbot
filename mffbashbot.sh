@@ -31,7 +31,9 @@ STATUSFILE=isactive.txt
 CFGFILE=config.ini
 PIDFILE=bashpid.txt
 JQBIN=/usr/bin/jq
-USCRIPTURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/update.sh"
+USCRIPTURL="https://raw.githubusercontent.com/jbond47/mffbashbot/master/update.sh"
+UTMPFILE=/tmp/mffbot-update.sh
+DONKEYCLAIMED=0
 MFFUSER=$1
 TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
@@ -70,18 +72,25 @@ while (true); do
   exec /bin/bash mffbashbot.sh $MFFUSER
  fi
  if [ -f ../updateTrigger ]; then
-  echo "Update trigger detected."
-  USCRIPTMD5ON=$(wget -qO - $USCRIPTURL | md5sum | awk '{ print $1 }')
+  echo "Update trigger detected"
+  USCRIPTMD5ON=$(wget -T10 -qO - $USCRIPTURL | md5sum | awk '{ print $1 }')
   USCRIPTMD5OFF=$(md5sum ../update.sh | awk '{ print $1 }')
   if [ -n "$USCRIPTMD5ON" ] && [ -n "$USCRIPTMD5OFF" ]; then
    if [ "$USCRIPTMD5ON" != "$USCRIPTMD5OFF" ] && [ "$USCRIPTMD5ON" != "d41d8cd98f00b204e9800998ecf8427e" ]; then
     # d41d8cd98f00b204e9800998ecf8427e would be an empty file
     echo "Replacing update script with newer version..."
-    wget -qO ../update.sh $USCRIPTURL
+    wget -T10 -qO ../update.sh $USCRIPTURL
     chmod +x ../update.sh
    fi
   fi
-  /bin/bash ../update.sh
+  cp -f ../update.sh $UTMPFILE
+  if [ -x $UTMPFILE ] && [ -O $UTMPFILE ]; then
+   /bin/bash $UTMPFILE
+  else
+   echo "Something's wrong with ${UTMPFILE}! Running update script from game folder, this might cause problems"
+   /bin/bash ../update.sh
+  fi
+  rm -f $UTMPFILE
   echo "Restarting bot..."
   sleep 3
   cd ..
@@ -120,20 +129,21 @@ while (true); do
 
  echo "Running Harry's My Free Farm Bash Bot (Mod) ${VERSION}-${VERSIONMOD}"
  echo "Getting a token to MFF server ${MFFSERVER}"
- MFFTOKEN=$(wget -nv -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
+ MFFTOKEN=$(wget -nv -T10 -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
  echo "Login to MFF server ${MFFSERVER} with username $MFFUSER"
- wget -nv -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
+ wget -nv -T10 -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
  # get our RID
  RID=$(grep -om1 '[a-z0-9]\{32\}' $OUTFILE)
  # at least test if this was successful
  if [ -z "$RID" ]; then
   echo "FATAL: RID could not be retrieved. Pausing 5 minutes before next attempt..."
   # try and logoff.. just in case
-  wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  rm -f "$STATUSFILE"
   sleep 5m
   continue
  fi
- echo "Our RID is $RID"
+ echo "Your RID is $RID"
 
  # source functions
  . ../functions.sh
@@ -161,6 +171,14 @@ while (true); do
   check_PowerUps city2 powerups 0
   check_PowerUps city2 powerups 1
  fi
+
+ # guild tool handling
+ ISGUILDMEMBER=$($JQBIN '.updateblock.menue.guildid | tonumber' $FARMDATAFILE)
+ if [ $ISGUILDMEMBER -gt 0 ]; then
+  echo "Checking for pending guild job tools..."
+  check_Tools city2 tools 0
+ fi
+ unset -v ISGUILDMEMBER
 
  # Get all informations to further process speedupfarm bonus while looping through all farms and fields
  if ! grep -q "freegardenspeedupfarm = 0" $CFGFILE && grep -q "freegardenspeedupfarm = " $CFGFILE; then
@@ -233,10 +251,12 @@ while (true); do
    fi
    for SLOT in 0 1 2; do
      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-       echo "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
+       echo -n "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
        if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild | tonumber?' $FARMDATAFILE 2>/dev/null | grep -q '1' ; then
-        echo "(as a Guild job)"
+        echo "as a guild job"
         GUILDJOB=true
+       else
+        echo
        fi
        DoFarm ${FARM} ${POSITION} ${SLOT}
      fi
@@ -301,7 +321,6 @@ while (true); do
     fi
    done
   fi
-
   # monster fruit
   if [ $PLAYERLEVELNUM -ge 31 ]; then
    RUNCHK=$($JQBIN '.updateblock.farmersmarket.megafruit.current' $FARMDATAFILE)
@@ -345,7 +364,7 @@ while (true); do
    if [ "$PETBREEDING" != "0" ]; then
     for SLOT in food toy plushy; do
      CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]' $FARMDATAFILE 2>/dev/null)
-     if [ "$CAREREMAIN" == "null" ] || [ "$CAREREMAIN" == "[]" ]; then
+     if [ "$CAREREMAIN" = "null" ] || [ "$CAREREMAIN" = "[]" ]; then
       echo "Taking care of pet using ${SLOT}..."
       DoFarmersMarketPetCare ${SLOT}
      fi
@@ -360,7 +379,6 @@ while (true); do
      fi
    done
   fi
-
   # veterinarian
   if [ $PLAYERLEVELNUM -ge 36 ]; then
    for SLOT in 1 2 3; do
@@ -383,7 +401,6 @@ while (true); do
    fi
   fi
  fi
-
  # butterfly house
  if [ $PLAYERLEVELNUM -ge 40 ]; then
   for SLOT in 1 2 3 4 5 6; do
@@ -441,6 +458,21 @@ while (true); do
    PAUSETIME=$((PAUSETIME-5))
   else
    echo "already claimed"
+  fi
+ fi
+
+ if grep -q "dodonkey = 1" $CFGFILE; then
+  DONKEYEXISTS=$($JQBIN '.updateblock.menue.donkey?' $FARMDATAFILE)
+  if [ "$DONKEYEXISTS" = "1" ]; then
+   echo -n "Checking if it's time for the daily donkey bonus..."
+   if [ $SECONDS -gt 86400 ] || [ $DONKEYCLAIMED -eq 0 ]; then
+    echo "it is, claiming it..."
+    SendAJAXFarmRequest "mode=dailydonkey&farm=1&position=1"
+    SECONDS=0
+    DONKEYCLAIMED=1
+   else
+    echo "it's not"
+   fi
   fi
  fi
 
@@ -607,7 +639,7 @@ while (true); do
  fi
 
  echo "Logging off..."
- wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+ WGETREQ "$LOGOFFURL"
  # housekeeping -- adjust to your liking
  rm $COOKIEFILE $FARMDATAFILE $OUTFILE
  echo -n "Time stamp: "

@@ -167,13 +167,13 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         // Ponyhof
         print "<option value=\"sleep\">Sleep</option>\n";
         CreatePonyFarmOptions(2, 4, 8);
-        print "/select>\n";
+        print "</select>\n";
         break;
   case 19:
         // Fahrzeughalle
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateMegaFieldOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        print "/select>\n";
+        print "</select>\n";
         break;
   case 20:
         // Biosprit-Anlage
@@ -271,9 +271,15 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "trans26":
         // Transport -> Farm 5 / 6
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 92, 93, 108, 109, 114, 126, 153, 154, 156, 157, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 28, 92, 93, 108, 109, 114, 126, 152, 153, 154, 156, 157, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
+        break;
+  case "tools":
+        // Werkzeuge
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateForestryOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
+        print "</select>\n";
         break;
   default:
         // nicht unterstuetzte auswahl
@@ -286,9 +292,10 @@ function GetQueueCount($gamepath, $farm, $position) {
  return $retval;
 }
 function PlaceQueueButtons($position, $QueueNum) {
- print "<input type=\"button\" value=\"&lt;&lt;\" onclick=\"insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl vor die Markierung in der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
- print "<input type=\"button\" value=\"X\" onclick=\"removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"Markiertes Element in Warteschlange l&ouml;schen\" style=\"height:20px; width:22px; margin-left:3px; margin-right:3px\">\n";
- print "<input type=\"button\" value=\"&gt;&gt;\" onclick=\"appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl ans Ende der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
+ global $strings;
+ print "<input type=\"image\" src=\"image/rewind.png\" class=\"queuebtn\" onclick=\"return insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placebefore'] . "\">\n";
+ print "<input type=\"image\" src=\"image/close.png\" class=\"queuebtn\" onclick=\"return removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"" . $strings['deletequeueitem'] . "\">\n";
+ print "<input type=\"image\" src=\"image/fastforward.png\" class=\"queuebtn\" onclick=\"return appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placeatend'] . "\">\n";
 }
 function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  global $farmdata;
@@ -321,6 +328,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "powerups":
 	$buildingType = "PowerUps";
+	break;
+  case "tools":
+	$buildingType = "Tools";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -435,6 +445,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "ForestryBuilding":
    case "Tree":
+   case "Tools":
    $queueItemFriendlyName = $forestryproductlist[intval($queueItem)];
    break;
    case "FoodWorldBuilding":
@@ -459,13 +470,13 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
  print "<option value=\"" . $queueItem . "\">" . $queueItemFriendlyName . "</option>\n";
 }
 function saveConfig($filename, $queueData) {
- $fh = fopen($filename, "w");
+ if (!$handle = fopen($filename, 'w'))
+  return false;
  // skip first entry, we're using live data building type
- if ($fh)
-  for ($itemcount = 1; $itemcount <= count($queueData); $itemcount++)
-   fwrite($fh, $queueData[$itemcount - 1] . "\n");
-// chmod($filename, 0775);
- fclose($fh);
+ for ($itemcount = 1; $itemcount <= count($queueData); $itemcount++)
+  $result = fwrite($handle, $queueData[$itemcount - 1] . "\n");
+ fclose($handle);
+ return $result;
 }
 function writeINI($configData, $filename) {
  $data2write = "";
@@ -473,7 +484,8 @@ function writeINI($configData, $filename) {
   $data2write .= $configItem . " = " . (is_numeric($iValue) ? $iValue : "'" . $iValue . "'") . "\n";
  if (!$handle = fopen($filename, 'w'))
   return false;
- fwrite($handle, $data2write);
+ $result = fwrite($handle, $data2write);
  fclose($handle);
+ return $result;
 }
 ?>

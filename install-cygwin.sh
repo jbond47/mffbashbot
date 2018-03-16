@@ -30,6 +30,9 @@ server.modules += ( "mod_cgi" )
 cgi.assign = (".php"=>"/usr/bin/php-cgi")
 ' >$LCGICONF
 mkdir -p /var/log/lighttpd 2>/dev/null
+if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
+ echo "server.stream-response-body = 1" >>$LCONF
+fi
 
 echo "Moving GUI files..."
 mkdir -p /var/www/html 2>/dev/null
@@ -80,7 +83,7 @@ mv mffbashbot/dummy mffbashbot/$FARMNAME
 sed -i 's/server = 2/server = '$SERVER'/' mffbashbot/$FARMNAME/$CFGFILE
 sed -i 's/password = \x27s3cRet!\x27/password = \x27'$PASSWORD'\x27/' mffbashbot/$FARMNAME/$CFGFILE
 echo "The preset language for this farm is GERMAN!"
-echo "Предварителният език за тази ферма е БЪЛГАРСКИ!"
+echo "Предварителният език за тази ферма е НЕМСКИ!"
 echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
 sleep 5
 echo

@@ -4,13 +4,7 @@ Harrys My Free Farm Bash Bot (MFF Bash Bot) *** MOD Version ***
 Zusätzliche Funktionen:
 - Transport von Farm 5 nach Farm 1 beinhaltet zusätzlich Eier
 
-- Verschiedene Bot Funktionen werden nur ausgeführt, wenn der entsprechende Spielerlevel erreicht wurde. Ein Beispiel ist die Verarbeitung des Bauernmarkts (ab Level 23).
-
 - Optional kann der tägliche 10 Minuten Wachstumsbonus auf einem Feld auf der Farm deiner Wahl eingelöst werden. Der Bonus wird automatisch auf dem ersten Feld mit mindestens 30 Minuten Restwachstumszeit eingelöst.
 
 Änderungen:
 - Anpassung diverser Spielabfragen, um einen Fehler in jq unter Cygwin zu umgehen.
-
-Ungetestete Änderungen:
-
-- Änderungen an der "Prüfe auf leeres Eentegerät" Funktion. Dadurch werden vielleicht Mehrfachkäufe eines Erntegerätes verhindert.

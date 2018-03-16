@@ -17,24 +17,7 @@
 
 #variables
 BOTGUIROOT=/var/www/html/mffbashbot
-if ! uname -a | grep -qi "cygwin"; then
- SUDO=sudo
-fi
-
-cd
-touch mffbashbot/updateInProgress
-rm -f mffbashbot/updateTrigger
-
-echo "Updating Harrys MFF Bash Bot (Mod)..."
-rm -f master.zip 2>/dev/null
-rm -rf mffbashbot-master 2>/dev/null
-wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
-
-echo "Unpacking the archive..."
-unzip -q master.zip
-
-echo "Updating bot files..."
-cp -f mffbashbot-master/* mffbashbot
+LCONF=/etc/lighttpd/lighttpd.conf
 DIRS=( 1/1
 1/2
 1/3
@@ -74,6 +57,7 @@ DIRS=( 1/1
 city2/powerups
 city2/trans25
 city2/trans26
+city2/tools
 city2/windmill
 farmersmarket/flowerarea
 farmersmarket/monsterfruit
@@ -89,6 +73,46 @@ forestry/1
 forestry/2
 forestry/forestry )
 NUMDIRS=${#DIRS[*]}
+STATUSFILE=isactive.txt
+SPIN[0]="-"
+SPIN[1]="\\"
+SPIN[2]="|"
+SPIN[3]="/"
+if ! uname -a | grep -qi "cygwin"; then
+ SUDO=sudo
+fi
+
+cd
+touch mffbashbot/updateInProgress
+rm -f mffbashbot/updateTrigger
+
+if [ -d ~/mffbashbot ]; then
+ cd ~/mffbashbot
+ for FARMNAME in $(ls -d */ | tr -d '/'); do
+  if [ -e "$FARMNAME"/"$STATUSFILE" ]; then
+   echo -n "Waiting for farm $FARMNAME to finish its iteration...${SPIN[0]}"
+   while [ -e "$FARMNAME"/"$STATUSFILE" ]; do
+    for S in "${SPIN[@]}"; do
+     echo -ne "\b$S"
+     sleep 0.25
+    done
+   done
+  echo -ne "\bdone\n"
+  fi
+ done
+fi
+
+cd
+echo "Updating Harry's MFF Bash Bot (Mod)..."
+rm -f master.zip 2>/dev/null
+rm -rf mffbashbot-master 2>/dev/null
+wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
+
+echo "Unpacking the archive..."
+unzip -q master.zip
+
+echo "Updating bot files..."
+cp -f mffbashbot-master/* mffbashbot
 # just in case...
 chmod 775 mffbashbot
 if [ -d ~/mffbashbot ]; then
@@ -149,6 +173,20 @@ $SUDO rm -rf $BOTGUIROOT
 $SUDO mv mffbashbot-GUI $BOTGUIROOT
 $SUDO chmod +x $BOTGUIROOT/script/*.sh
 $SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+
+# see if lighttpd.conf needs patching
+if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
+ echo "Configuring lighttpd..."
+ echo "server.stream-response-body = 1" | $SUDO tee --append $LCONF > /dev/null
+ if [ -n "$SUDO" ]; then
+  $SUDO /etc/init.d/lighttpd restart
+ else
+  echo "Restarting lighttpd..."
+  pkill lighttpd
+  sleep 3
+  /usr/sbin/lighttpd -f '$LCONF'
+ fi
+fi
 
 echo "Done!"
 cd

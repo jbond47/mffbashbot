@@ -4,13 +4,7 @@ Harrys My Free Farm Bash Bot (MFF Bash Bot) *** MOD Version ***
 Additional functions:
 - Transport from Farm 5 to Farm 1 also includes eggs
 
-- Several bot functions are executed only if you reached the minimum appropriate player level. One example is the farmers market, which is accessible beginning with level 23.
-
 - Option to claim daily 10 minute growth bonus on one field on a farm of your choice. The bot automatically selects the first field which has a remining growth time of more than 30 minutes.
 
 Changes:
 - Changed several game queries to prevent jq to crash under cygwin
-
-Untested changes:
-
-- Changes to megafield "check empty harvest device" function to possibly prevent multiple buying of harvest device.
