@@ -4,6 +4,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 Version numbering in this mod uses Harry's My Free Farm Bash Bot version number, extended with a mod version number.
 
+## [2.24-mod.1.0.7] - 2018-03-18
+
+### Added
+
+- Optional autostart of veterinarian (Thank you to Jens and Harry from MyFreeFarm Berater forum for their input and code examples)
+
+### Changed
+
+- Fixed typo in WebGUI code
+
 ## [2.24-mod.1.0.6] - 2018-03-16
 
 ### Changed
@@ -23,6 +33,7 @@ Version numbering in this mod uses Harry's My Free Farm Bash Bot version number,
 - Code optimizations
 
 ### Untested
+
 - Changes to megafield "check empty harvest device" function to possibly prevent multiple buying of harvest device
 
 ## [2.04-mod.1.0.5] - 2018-01-15

@@ -6,5 +6,7 @@ Additional functions:
 
 - Option to claim daily 10 minute growth bonus on one field on a farm of your choice. The bot automatically selects the first field which has a remining growth time of more than 30 minutes.
 
+- Optional autostart of veterinarian with one of three selectable difficulties (Idea and code examples from Jens and Harry from MyFreeFarm Berater forum)
+
 Changes:
 - Changed several game queries to prevent jq to crash under cygwin

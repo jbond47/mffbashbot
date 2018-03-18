@@ -6,5 +6,7 @@ Zusätzliche Funktionen:
 
 - Optional kann der tägliche 10 Minuten Wachstumsbonus auf einem Feld auf der Farm deiner Wahl eingelöst werden. Der Bonus wird automatisch auf dem ersten Feld mit mindestens 30 Minuten Restwachstumszeit eingelöst.
 
+- Optionaler Autostart der Tierarztpraxis mit auswählbarem Schwierigkeitsgrad (Idee und Codebeispiele von Jens und Harry aus dem MyFreeFarm Berater Forum)
+
 Änderungen:
 - Anpassung diverser Spielabfragen, um einen Fehler in jq unter Cygwin zu umgehen.

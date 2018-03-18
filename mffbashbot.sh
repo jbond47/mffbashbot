@@ -398,6 +398,16 @@ while (true); do
       DoFarmersMarketAnimalTreatment ${SLOT}
      fi
     done
+   # autostart veterinarian if option is enabled
+   elif ! grep -q "startvetroledifficulty = 0" $CFGFILE && grep -q "startvetroledifficulty = " $CFGFILE; then
+    VETROLEINACTIVE=$($JQBIN '.updateblock.farmersmarket.vet.info.role? == "0"' $FARMDATAFILE)
+    if [ "$VETROLEINACTIVE" = "true" ]; then
+     CFGLINE=$(grep "startvetroledifficulty" $CFGFILE)
+     TOKENS=( $CFGLINE )
+     VETROLEDIFFICULTY=${TOKENS[2]}
+     echo "Starting veterinarian with difficulty level ${VETROLEDIFFICULTY}..."
+     SendAJAXFarmRequest "mode=vet_setrole&farm=1&position=1&id=${VETROLEDIFFICULTY}&role=${VETROLEDIFFICULTY}"
+    fi
    fi
   fi
  fi

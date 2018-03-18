@@ -81,5 +81,9 @@ $strings['farm3'] = 'ферма 3';
 $strings['farm4'] = 'ферма 4';
 $strings['farm5'] = 'ферма 5';
 $strings['farm6'] = 'ферма 6';
+$strings['startvetroletext'] = 'ветеринарна практика стартиране';
+$strings['easy'] = 'просто';
+$strings['average'] = 'средства';
+$strings['hard'] = 'труден';
 // $strings[''] = '';
 ?>

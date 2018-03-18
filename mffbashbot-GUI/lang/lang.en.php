@@ -81,5 +81,9 @@ $strings['farm3'] = 'Farm 3';
 $strings['farm4'] = 'Farm 4';
 $strings['farm5'] = 'Farm 5';
 $strings['farm6'] = 'Farm 6';
+$strings['startvetroletext'] = 'Animal Treatment Autostart';
+$strings['easy'] = 'Easy';
+$strings['average'] = 'Average';
+$strings['hard'] = 'Hard';
 // $strings[''] = '';
 ?>
