@@ -8,5 +8,7 @@ Additional functions:
 
 - Optional autostart of veterinarian with one of three selectable difficulties (Idea and code examples from Jens and Harry from MyFreeFarm Berater forum)
 
+- Optional autostart of pet breeding (Idea and code examples from Jens from MyFreeFarm Berater Forum). The bot automatically selects an available pet, beginning with the highest level pets (from end to start)
+
 Changes:
 - Changed several game queries to prevent jq to crash under cygwin

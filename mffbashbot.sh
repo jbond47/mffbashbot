@@ -378,6 +378,10 @@ while (true); do
        DoFarmersMarket farmersmarket pets ${SLOT}
      fi
    done
+   # auto start pet breeding
+   if grep -q "startpetbreeding = 1" $CFGFILE; then
+    start_PetBreeding
+   fi
   fi
   # veterinarian
   if [ $PLAYERLEVELNUM -ge 36 ]; then

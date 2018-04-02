@@ -678,6 +678,38 @@ function start_Vet {
  SendAJAXFarmRequest "mode=vet_startproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pid=${iPID}&pos=1"
 }
 
+function start_PetBreeding {
+ local iPetCount
+ local iTimeRemain
+ local isActiveBreed
+ # Check for active breed. If there is no breed running, .updateblock.farmersmarket.pets.breed contains 0
+ iTimeRemain=$($JQBIN '.updateblock.farmersmarket.pets.breed' $FARMDATAFILE)
+ if [ "$iTimeRemain" != "0" ]; then
+  # Here we have a running or finished breed, where .updateblock.farmersmarket.pets.breed contains a "remain" entry with the required information
+  iTimeRemain=$($JQBIN '.updateblock.farmersmarket.pets.breed.remain' $FARMDATAFILE)
+  isActiveBreed="true"
+ else
+  isActiveBreed="false"
+ fi
+ if [ $iTimeRemain -le 0 ]; then
+  # Get finished pet
+  if [ "$isActiveBreed" = "true" ]; then
+   echo "Finishing pet breeding..."
+   SendAJAXFarmRequest "mode=pets_finish_breed"
+  fi
+  # Look for available pets, begin with highest level
+  for pet in 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1; do
+   # Use '?' to prevent JQ from exiting with errorcode or output an error string when entry does not ecxist
+   iPetCount=$($JQBIN '.updateblock.farmersmarket.pets.parts["'${pet}'"].complete? | tonumber?' $FARMDATAFILE)
+   if [ $iPetCount -gt 0 ]; then
+    echo "Start breeding of pet with ID ${pet}..."
+    SendAJAXFarmRequest "id=${pet}&mode=pets_start_breed"
+    return
+   fi
+  done
+ fi
+}
+
 function DoFarmersMarketAnimalTreatment {
  local iSlot=$1
  local iCount

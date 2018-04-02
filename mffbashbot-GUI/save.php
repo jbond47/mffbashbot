@@ -148,6 +148,7 @@ switch ($farm) {
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
   $configContents['freegardenspeedupfarm'] = $_POST["freegardenspeedupfarm"];
   $configContents['startvetroledifficulty'] = $_POST["startvetroledifficulty"];
+  $configContents['startpetbreeding'] = $_POST["startpetbreedingtoggle"];
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

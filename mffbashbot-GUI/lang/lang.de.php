@@ -85,5 +85,6 @@ $strings['startvetroletext'] = 'Tierarztpraxis Autostart';
 $strings['easy'] = 'Einfach';
 $strings['average'] = 'Mittel';
 $strings['hard'] = 'Schwer';
+$strings['startpetbreeding'] = 'Auto-Start der Tieraufzucht';
 // $strings[''] = '';
 ?>

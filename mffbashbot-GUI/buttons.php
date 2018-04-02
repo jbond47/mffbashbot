@@ -32,7 +32,8 @@ $togglesarray = [
 "doolympiaevent" => "olympiaeventtoggle",
 "megafieldinstantplant" => "megafieldplanttoggle",
 "doseedbox" => "redeemdailyseedboxtoggle",
-"dodonkey" => "donkeytoggle"
+"dodonkey" => "donkeytoggle",
+"startpetbreeding" => "startpetbreedingtoggle"
 ];
 
 $toggledesc = [
@@ -50,7 +51,8 @@ $strings['onehourdelivery'],
 $strings['refillolympiaenergy'],
 $strings['megafieldplantafterharvest'],
 $strings['dailyseedboxredeem'],
-$strings['waltraud']
+$strings['waltraud'],
+$strings['startpetbreeding']
 ];
 
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";

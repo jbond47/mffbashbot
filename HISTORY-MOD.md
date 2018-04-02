@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 Version numbering in this mod uses Harry's My Free Farm Bash Bot version number, extended with a mod version number.
 
+## [2.24-mod.1.0.8] - 2018-04-02
+
+### Added
+
+- Optional autostart of pet breeding (Thank you to Jens from MyFreeFarm Berater forum for input and code example)
+
 ## [2.24-mod.1.0.7] - 2018-03-18
 
 ### Added

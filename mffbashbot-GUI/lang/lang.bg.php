@@ -85,5 +85,6 @@ $strings['startvetroletext'] = 'ветеринарна практика стар
 $strings['easy'] = 'просто';
 $strings['average'] = 'средства';
 $strings['hard'] = 'труден';
+$strings['startpetbreeding'] = 'Транспортиране отглеждане на животни';
 // $strings[''] = '';
 ?>

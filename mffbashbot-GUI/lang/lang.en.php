@@ -85,5 +85,6 @@ $strings['startvetroletext'] = 'Animal Treatment Autostart';
 $strings['easy'] = 'Easy';
 $strings['average'] = 'Average';
 $strings['hard'] = 'Hard';
+$strings['startpetbreeding'] = 'Autostart pet breeding';
 // $strings[''] = '';
 ?>
