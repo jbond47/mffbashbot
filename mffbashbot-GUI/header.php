@@ -34,15 +34,16 @@ if ($farm == "runbot") {
 }
 include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
+$modver = file_get_contents($gamepath . "/../version-mod.txt");
 print "<nav class=\"navbar btn-dark bg-dark fixed-top\">\n";
-print $botver . " -- " . $username . " -- " . $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
+print $botver . "-" . $modver . " -- " . $username . " -- " . $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
 system("cat " . $gamepath . "/lastrun.txt");
 print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
 print "</div>\n";
-if (version_compare($botver, $versionavailable) == -1) {
+if (version_compare($botver, $versionavailable) == -1 Or version_compare($modver, $versionmodavailable) == -1) {
  print " -- ";
  print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
- print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
+ print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "-" . $versionmodavailable . "</button>";
  print "<small> -- " . $strings['historyishere'] . "</small></div>";
 }
 print "</nav><br><br>\n";

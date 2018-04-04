@@ -18,6 +18,7 @@
 //
 include_once 'lang.php';
 $versionavailable=file_get_contents("/tmp/mffbot-version-available.txt");
+$versionmodavailable=file_get_contents("/tmp/mffbot-version-mod-available.txt");
 $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
 if ($JSONfarmdata === false)
  header("Location: index.php");

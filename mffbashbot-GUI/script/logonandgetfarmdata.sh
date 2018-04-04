@@ -44,6 +44,7 @@ FARMDATAFILE=/tmp/farmdata-${MFFUSER}.txt
 FOREDATAFILE=/tmp/forestdata-${MFFUSER}.txt
 FOODDATAFILE=/tmp/fooddata-${MFFUSER}.txt
 VERSIONAVAILABLE=/tmp/mffbot-version-available.txt
+VERSIONMODAVAILABLE=/tmp/mffbot-version-mod-available.txt
 
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
@@ -52,7 +53,8 @@ LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
 POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
 AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:57.0b) Gecko/20100101 Firefox/57.0b"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
-VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
+VERURL="https://raw.githubusercontent.com/jbond47/mffbashbot/master/version.txt"
+VERURLMOD="https://raw.githubusercontent.com/jbond47/mffbashbot/master/version-mod.txt"
 
 # get a logon token
 MFFTOKEN=$(wget -v -o $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
@@ -76,4 +78,6 @@ rm $COOKIEFILE $OUTFILE $LOGFILE
 
 # get latest version number from repository
 wget -v -o "$LOGFILE" --output-document="$VERSIONAVAILABLE" --user-agent="$AGENT" "$VERURL"
+wget -v -o "$LOGFILE" --output-document="$VERSIONMODAVAILABLE" --user-agent="$AGENT" "$VERURLMOD"
+
 exit 0
