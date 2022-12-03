@@ -1,5 +1,4 @@
-/* CSS file for for Harry's My Free Farm Bash Bot (front end)
-   Copyright 2016-18 Harun "Harry" Basalamah */
+/* CSS file for for My Free Farm Bash Bot (front end) */
 
 .navilink {
  position:relative;
@@ -47,7 +46,7 @@ body {
  margin: 8px;
  line-height: 1;
  color: #000000;
- font-family: initial;
+ font-family: 'Open Sans', Arial, sans-serif;
 }
 
 small {
@@ -138,7 +137,7 @@ input:checked + .slider:before {
 
 input, button, select, optgroup, textarea {
  margin: 0;
- font-family: initial;
+ font-family: 'Open Sans', Arial, sans-serif;
  font-size: initial;
  line-height: initial;
 }
@@ -150,4 +149,18 @@ table {
 /* prevent flexing */
 .navbar {
  display: inline;
+}
+
+caption {
+ padding-top: 0.75rem;
+ padding-bottom: 0.75rem;
+ color: #343a40;
+ text-align: left;
+ caption-side: top;
+ font-size: 1.25em;
+ font-weight: bold;
+}
+
+.alert {
+  display:inline-block;
 }

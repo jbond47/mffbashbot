@@ -1,5 +1,5 @@
 <?php
-// Index file for My Free Farm Bash Bot (front end)
+// This file is part of My Free Farm Bash Bot (front end)
 // Copyright 2016-22 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
@@ -10,7 +10,7 @@ include 'functions.php';
 <!DOCTYPE html>
 <html>
  <head>
-  <title>My Free Farm Bash Bot - Log on</title>
+  <title>My Free Farm Bash Bot - Add farm</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -18,11 +18,12 @@ include 'functions.php';
  </head>
  <body id="main_body" class="main_body text-center">
   <script type="text/javascript">
-   function validateLogon() {
-    var sUser = document.forms.logon.username.value;
-    var sPass = document.forms.logon.password.value;
-    var iServer = document.forms.logon.server.value;
-    var sData = "username=" + sUser + "&server=" + iServer + "&password=" + sPass;
+   function addFarm() {
+    var sUser = document.forms.addfarm.username.value;
+    var sPass = document.forms.addfarm.password.value;
+    var iServer = document.forms.addfarm.server.value;
+    var sLanguage = document.forms.addfarm.language.value;
+    var sData = "username=" + sUser + "&server=" + iServer + "&password=" + sPass + "&language=" + sLanguage;
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
      if (xhttp.readyState != null && (xhttp.readyState < 3 || xhttp.status != 200))
@@ -30,55 +31,35 @@ include 'functions.php';
      parts = xhttp.responseText.split(";");
      if (parts[2])
       if (parts[2] == 0) {
-       document.getElementById("logonstatus").innerHTML = parts[3] + parts[4];
+       document.getElementById("addfarmstatus").innerHTML = parts[3] + parts[4];
        setTimeout(function(){ document.forms.jump2farm.submit(); }, 3000);
        return;
       }
       else if (parts[2] == 1) {
-       document.getElementById("logonstatus").innerHTML = parts[3];
+       document.getElementById("addfarmstatus").innerHTML = parts[3];
        return;
       }
      if (parts[0] == 1)
-      document.getElementById("logonstatus").innerHTML = parts[1];
+      document.getElementById("addfarmstatus").innerHTML = parts[1];
     }
     xhttp.open("POST", "validate.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(sData);
     return false;
    }
-
-   function setFarmNo(farmname) {
-   var farmno = [];
-<?php
-$username = "./";
-include 'config.php';
-system('cd ' . $gamepath . ' ; for farm in $(ls -d */ | tr -d \'/\'); do echo -n "   farmno[\"$farm\"] = "; grep server $farm/config.ini | awk \'{ printf "%i", $3 }\'; echo ";"; done');
-unset($username);
-?>
-   document.forms.logon.serverdummy.options[farmno[farmname]].selected = true;
-   document.forms.logon.server.value = farmno[farmname];
-   return true;
-   }
   </script>
-  <h1>My Free Farm Bash Bot</h1>
+  <h1>+ Farm</h1>
   <div class="form-group">
    <div class="offset-sm-5 col-sm-2">
     <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html" role="button">Forum</a>
-    <a class="btn btn-outline-dark btn-sm" href="addfarm.php" role="button">+ Farm</a>
-    <a class="btn btn-outline-dark btn-sm" href="removefarm.php" role="button">- Farm</a>
-<?php
-if (file_exists("schmetterlings-rechner.html"))
- echo "    <a class=\"btn btn-outline-dark btn-sm\" href=\"schmetterlings-rechner.html\" role=\"button\">Schmetterlings-Rechner</a>";
-if (file_exists("klubauftrag-mengenberechnung.html"))
- echo "    <a class=\"btn btn-outline-dark btn-sm\" href=\"klubauftrag-mengenberechnung.html\" role=\"button\">Klubauftrag Mengenberechnung</a>";
-?>
+    <a class="btn btn-outline-dark btn-sm" onclick="history.back()" role="button">Back</a>
    </div>
   </div>
-  <div id="logonstatus"><br></div>
-  <form name="logon" method="post" action="">
+  <div id="addfarmstatus"><br></div>
+  <form name="addfarm" method="post" action="">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
-     <select name="serverdummy" class="form-control" disabled><option value="0">Server</option><option value="1">1</option><option value="2">2</option>
+     <select name="server" class="form-control"><option value="0">Server</option><option value="1">1</option><option value="2">2</option>
      <option value="3">3</option><option value="4">4</option><option value="5">5</option>
      <option value="6">6</option><option value="7">7</option><option value="8">8</option>
      <option value="9">9</option><option value="10">10</option><option value="11">11</option>
@@ -89,17 +70,18 @@ if (file_exists("klubauftrag-mengenberechnung.html"))
      <option value="24">24</option><option value="25">25</option></select>
     </div>
    </div>
-   <input type="hidden" name="server" value="0">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
-     <select name="username" class="form-control" onchange="return setFarmNo(document.forms.logon.username.options[document.forms.logon.username.options.selectedIndex].value);">
-     <option value="0" selected>Farm</option>
-<?php
-$username = "./";
-include 'config.php';
-system("cd " . $gamepath . " ; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/     <option>\\1<\\/option>/'");
-unset($username);
-?>
+     <input name="username" class="form-control" type="text" placeholder="User/Farm name">
+    </div>
+   </div>
+   <div class="form-group">
+    <div class="offset-sm-5 col-sm-2">
+     <select name="language" class="form-control" placeholder="Language / Domain">
+      <option value="de">German (myfreefarm.de)</option>
+      <option value="en">English (myfreefarm.com)</option>
+      <option value="bg">Bulgarian (veselaferma.com)</option>
+      <option value="pl">Polish (wolnifarmerzy.pl)</option>
      </select>
     </div>
    </div>
@@ -108,7 +90,7 @@ unset($username);
      <input class="form-control" type="password" name="password" placeholder="Password">
     </div>
    </div>
-   <button type="submit" class="btn btn-lg btn-danger" value="submit" onclick="return validateLogon();">Start !</button>
+   <button type="submit" class="btn btn-lg btn-danger" value="submit" onclick="return addFarm();">Start !</button>
   </form>
  </body>
 </html>

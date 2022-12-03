@@ -1,38 +1,14 @@
 <?php
-// Data file for Harry's My Free Farm Bash Bot (front end)
-// Copyright 2016-18 Harun "Harry" Basalamah
+// Data file for My Free Farm Bash Bot (front end)
+// Copyright 2016-22 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// For license see LICENSE file
 //
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-include_once 'lang.php';
-$versionavailable=file_get_contents("/tmp/mffbot-version-available.txt");
-$versionmodavailable=file_get_contents("/tmp/mffbot-version-mod-available.txt");
-$JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
-if ($JSONfarmdata === false)
- header("Location: index.php");
-$farmdata = (json_decode($JSONfarmdata, true));
-$JSONproductlist = file_get_contents("data/" . $lang . "/productlist.txt");
-$productlist = (json_decode($JSONproductlist, true));
-$JSONforestryproductlist = file_get_contents("data/" . $lang . "/forestryproductlist.txt");
-$forestryproductlist = (json_decode($JSONforestryproductlist, true));
-$JSONfooddata = file_get_contents("/tmp/fooddata-" . $username . ".txt");
-if ($JSONfooddata === false)
- header("Location: index.php");
-$fooddata = (json_decode($JSONfooddata, true));
-$JSONwindmillproductlist = file_get_contents("data/" . $lang . "/formulas.txt");
-$windmillproductlist = (json_decode($JSONwindmillproductlist, true));
-// might be redundant
-$configContents = parse_ini_file($gamepath . "/config.ini");
+$versionavailable = file_get_contents("/tmp/mffbot-version-available.txt");
+($JSON = file_get_contents("/tmp/farmdata-" . $username . ".txt")) ===  false ? header("Location: index.php") : $farmdata = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/products-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $productlist = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/forestryproducts-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $forestryproductlist = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/fooddata-" . $username . ".txt")) ===  false ? header("Location: index.php") : $fooddata = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/formulas-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $windmillproductlist = (json_decode($JSON, true));
 ?>

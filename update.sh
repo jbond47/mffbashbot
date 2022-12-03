@@ -1,19 +1,9 @@
-#!/bin/bash
-# Update handler for Harry's My Free Farm Bash Bot
-# Copyright 2016-18 Harun "Harry" Basalamah
+#!/usr/bin/env bash
+# Update handler for My Free Farm Bash Bot
+# Copyright 2016-22 Harun "Harry" Basalamah
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# For license see LICENSE file
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #variables
 BOTGUIROOT=/var/www/html/mffbashbot
@@ -54,17 +44,34 @@ DIRS=( 1/1
 6/4
 6/5
 6/6
+7/1
+7/2
+7/3
+7/4
+7/5
+7/6
+8/1
+8/2
+8/3
+8/4
+8/5
+8/6
 city2/powerups
 city2/trans25
 city2/trans26
+city2/trans27
+city2/trans28
 city2/tools
+city2/cowracepvp
 city2/windmill
 farmersmarket/flowerarea
 farmersmarket/monsterfruit
 farmersmarket/nursery
 farmersmarket/pets
 farmersmarket/vet
-farmersmarket2
+farmersmarket2/cowracing
+farmersmarket2/fishing
+farmersmarket2/scouts
 foodworld/1
 foodworld/2
 foodworld/3
@@ -89,9 +96,9 @@ rm -f mffbashbot/updateTrigger
 if [ -d ~/mffbashbot ]; then
  cd ~/mffbashbot
  for FARMNAME in $(ls -d */ | tr -d '/'); do
-  if [ -e "$FARMNAME"/"$STATUSFILE" ]; then
+  if [ -f "$FARMNAME/$STATUSFILE" ]; then
    echo -n "Waiting for farm $FARMNAME to finish its iteration...${SPIN[0]}"
-   while [ -e "$FARMNAME"/"$STATUSFILE" ]; do
+   while [ -f "$FARMNAME/$STATUSFILE" ]; do
     for S in "${SPIN[@]}"; do
      echo -ne "\b$S"
      sleep 0.25
@@ -103,7 +110,7 @@ if [ -d ~/mffbashbot ]; then
 fi
 
 cd
-echo "Updating Harry's MFF Bash Bot (Mod)..."
+echo "Updating My Free Farm Bash Bot (Mod)..."
 rm -f master.zip 2>/dev/null
 rm -rf mffbashbot-master 2>/dev/null
 wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
@@ -121,8 +128,8 @@ if [ -d ~/mffbashbot ]; then
   INDEX=0
   cd $FARMNAME
   echo "Checking farm $FARMNAME for missing directories..."
-  while [ $INDEX -lt $NUMDIRS ]; do
-   if ! [ -d "${DIRS[$INDEX]}" ]; then
+  while [ $INDEX -lt $NUMDIRS ]; do # there's a similar construct in addfarm.sh in the GUI section!
+   if ! [ -d "${DIRS[$INDEX]}" ]; then # don't forget about it when you're updating this part
     echo "Creating directory ${DIRS[$INDEX]}"
     mkdir -p "${DIRS[$INDEX]}"
     case "${DIRS[$INDEX]}" in
@@ -139,7 +146,7 @@ if [ -d ~/mffbashbot ]; then
        touch ${DIRS[$INDEX]}/light
        touch ${DIRS[$INDEX]}/water
        ;;
-     *pets | *vet)
+     *pets | *vet | *cowracing | *fishing | *scouts)
        touch ${DIRS[$INDEX]}/1
        touch ${DIRS[$INDEX]}/2
        touch ${DIRS[$INDEX]}/3
@@ -163,16 +170,28 @@ fi
 cd ~/mffbashbot
 
 echo "(Re)Setting permissions..."
-find . -type d -exec chmod 775 {} +
-find . -type f -exec chmod 664 {} +
+find . -type d -exec chmod 775 2>/dev/null {} +
+find . -type f -exec chmod 664 2>/dev/null {} +
 chmod +x *.sh
 
 echo "Updating GUI files..."
+for FILE in klubauftrag-mengenberechnung.html schmetterlings-rechner.html config.php; do
+ if [ -f "$BOTGUIROOT/$FILE" ]; then
+  echo "Preserving $FILE..."
+  cp -f "$BOTGUIROOT/$FILE" /tmp
+ fi
+done
 cd ~/mffbashbot-master
 $SUDO rm -rf $BOTGUIROOT
 $SUDO mv mffbashbot-GUI $BOTGUIROOT
+for FILE in klubauftrag-mengenberechnung.html schmetterlings-rechner.html config.php; do
+ if [ -f "/tmp/$FILE" ]; then
+  echo "Restoring $FILE..."
+  mv -f "/tmp/$FILE" "$BOTGUIROOT"
+ fi
+done
 $SUDO chmod +x $BOTGUIROOT/script/*.sh
-$SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+$SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 
 # see if lighttpd.conf needs patching
 if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
@@ -186,6 +205,12 @@ if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
   sleep 3
   /usr/sbin/lighttpd -f '$LCONF'
  fi
+fi
+
+# create .screenrc if it's missing
+if [ ! -f ~/.screenrc ]; then
+ echo 'hardstatus alwayslastline
+hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"' >~/.screenrc
 fi
 
 echo "Done!"

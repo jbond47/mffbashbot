@@ -1,5 +1,5 @@
-Harrys My Free Farm Bash Bot (MFF Bash Bot) *** MOD Version ***
----------------------------------------------------------------
+Harrys My Free Farm Bash Bot *** MOD Version ***
+------------------------------------------------
 
 Zusätzliche Funktionen:
 - Transport von Farm 5 nach Farm 1 beinhaltet zusätzlich Eier
@@ -9,6 +9,10 @@ Zusätzliche Funktionen:
 - Optionaler Autostart der Tierarztpraxis mit auswählbarem Schwierigkeitsgrad (Idee und Codebeispiele von Jens und Harry aus dem MyFreeFarm Berater Forum)
 
 - Optionaler Autostart der Tieraufzucht (Idee und Codebeispiele von Jens aus dem MyFreeFarm Berater Forum). Der Bot wählt automatisch ein vefügbares Tier, beginnend mit den höchstwertigen.
+
+- Güterhof wird automatisch gestartet
+
+- Blumenfarmies automatisch bedienen
 
 Änderungen:
 - Anpassung diverser Spielabfragen, um einen Fehler in jq unter Cygwin zu umgehen.

@@ -4,11 +4,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 Version numbering in this mod uses Harry's My Free Farm Bash Bot version number, extended with a mod version number.
 
-## [Unreleased]
+## [2.83-mod.1.0.11]
 
 ### Changed
 
 - GUI update now checks for new mod version instead of official version
+- 
 
 ## [2.24-mod.1.0.8] - 2018-04-02
 

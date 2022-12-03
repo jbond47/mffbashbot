@@ -1,5 +1,5 @@
-Harrys My Free Farm Bash Bot (MFF Bash Bot) *** MOD Version ***
----------------------------------------------------------------
+My Free Farm Bash Bot *** MOD Version ***
+-----------------------------------------
 
 Additional functions:
 - Transport from Farm 5 to Farm 1 also includes eggs
@@ -9,6 +9,10 @@ Additional functions:
 - Optional autostart of veterinarian with one of three selectable difficulties (Idea and code examples from Jens and Harry from MyFreeFarm Berater forum)
 
 - Optional autostart of pet breeding (Idea and code examples from Jens from MyFreeFarm Berater Forum). The bot automatically selects an available pet, beginning with the highest level pets (from end to start)
+
+- Autostart megafield
+
+- Autocheck flower farmies
 
 Changes:
 - Changed several game queries to prevent jq to crash under cygwin

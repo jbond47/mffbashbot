@@ -1,18 +1,33 @@
 #!/bin/bash
-# Install script for Harry's My Free Farm Bash Bot (Mod) on Cygwin
+# Install script for My Free Farm Bash Bot (Mod) on Cygwin
 
 LCONF=/etc/lighttpd/lighttpd.conf
 LMODS=/etc/lighttpd/modules.conf
 LCGICONF=/etc/lighttpd/conf.d/cgi.conf
 BOTGUIROOT=/var/www/html/mffbashbot
 
+# jq should be available if mffbashbot-setup.exe was used
+if ! command -v jq &>/dev/null; then
+ echo -e "jq could not be found. Cannot continue.\njq konnte nicht gefunden werden. Fortfahren nicht möglich."
+ sleep 5
+ exit 1
+fi
+JQBIN="$(command -v jq) -r"
+
 cd
-echo "Downloading Harrys MFF Bash Bot (Mod)..."
-rm -f master.zip 2>/dev/null
+echo "Downloading My Free Farm Bash Bot (Mod)..."
+# just in case...
+rm -f master.zip
+rm -rf mffbashbot-master
 wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
 unzip -q master.zip
+# make sure to preserve an existing directory at least once
+if [ -d "mffbashbot" ]; then
+ rm -rf mffbashbot.old
+ mv mffbashbot mffbashbot.old
+fi
 mv mffbashbot-master mffbashbot
 chmod +x mffbashbot/*.sh
 
@@ -25,10 +40,12 @@ sed -i 's/server\.event-handler/#server\.event-handler/' $LCONF
 sed -i 's/server\.use-ipv6 = \"enable\"/server\.use-ipv6 = \"disable\"/' $LCONF
 sed -i 's/server\.network-backend/#server\.network-backend/' $LCONF
 sed -i 's/#include \"conf\.d\/cgi.conf\"/include \"conf\.d\/cgi.conf\"/' $LMODS
-echo '
+if ! grep -qe 'cgi\.assign\s\+=\s\+("\.php"' $LCGICONF; then
+ echo '
 server.modules += ( "mod_cgi" )
 cgi.assign = (".php"=>"/usr/bin/php-cgi")
 ' >$LCGICONF
+fi
 mkdir -p /var/log/lighttpd 2>/dev/null
 if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
  echo "server.stream-response-body = 1" >>$LCONF
@@ -36,67 +53,37 @@ fi
 
 echo "Moving GUI files..."
 mkdir -p /var/www/html 2>/dev/null
+if [ -d "$BOTGUIROOT" ]; then
+ rm -rf ${BOTGUIROOT}.old
+ mv $BOTGUIROOT ${BOTGUIROOT}.old
+fi
 mv mffbashbot/mffbashbot-GUI $BOTGUIROOT
-chmod +x $BOTGUIROOT/script/logonandgetfarmdata.sh $BOTGUIROOT/script/wakeupthebot.sh
+chmod +x $BOTGUIROOT/script/*.sh
 
 echo "Patching GUI files..."
-sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 
-echo
-echo "If you don't wish for automatic bot setup, press CTRL-C now"
-echo "Ако не искате автоматична настройка на бота, натиснете CTRL+C"
-echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
-while (true); do
- echo
- echo "Please enter your farm name:"
- echo "Въведете името на вашата ферма:"
- read -p "Bitte gib Deinen Farmnamen ein: " FARMNAME
- echo "Please enter your server number:"
- echo "Моля, въведете сървъра в който е вашата ферма:"
- read -p "Jetzt die Servernummer: " SERVER
- echo "Please enter your password for farm $FARMNAME on server #${SERVER}:"
- echo "Моля въведете паролата за ферма $FARMNAME на сървър #${SERVER}:"
- read -p "Und nun das Passwort der Farm $FARMNAME auf Server ${SERVER}: " PASSWORD
- echo
- echo "This script will now set up your farm using this information:"
- echo "Този скрипт ще настрои вашата ферма използвайки:"
- echo "Dieses Skript wird Deine Farm mit diesen Informationen anlegen: "
- echo "Farm name: $FARMNAME"
- echo "Server: ${SERVER}"
- echo "Password: $PASSWORD"
- echo
- echo "Is this info correct? (Y/N):"
- echo "Вярна ли е информацията? (Д/Н):"
- read -p "Sind die Infos korrekt? (J/N):" CONFIRM
- [[ "$CONFIRM" != "Y" ]] || break
- [[ "$CONFIRM" != "y" ]] || break
- [[ "$CONFIRM" != "J" ]] || break
- [[ "$CONFIRM" != "j" ]] || break
- [[ "$CONFIRM" != "Д" ]] || break
- [[ "$CONFIRM" != "д" ]] || break
-done
-
-CFGFILE=config.ini
-echo "Setting up farm..."
 cd
-mv mffbashbot/dummy mffbashbot/$FARMNAME
-sed -i 's/server = 2/server = '$SERVER'/' mffbashbot/$FARMNAME/$CFGFILE
-sed -i 's/password = \x27s3cRet!\x27/password = \x27'$PASSWORD'\x27/' mffbashbot/$FARMNAME/$CFGFILE
-echo "The preset language for this farm is GERMAN!"
-echo "Предварителният език за тази ферма е НЕМСКИ!"
-echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
-sleep 5
 echo
 echo "Creating bot start script..."
-echo '#!/bin/bash
+echo '#!/usr/bin/env bash
 cd
-/usr/sbin/lighttpd -f '$LCONF'
-cd mffbashbot
-./mffbashbot.sh '$FARMNAME >startallbots.sh
-chmod +x startallbots.sh
+/usr/sbin/lighttpd -f '$LCONF >startallbots.sh
 
+chmod +x startallbots.sh
+# create .screenrc
+if [ ! -f ~/.screenrc ]; then
+ echo 'hardstatus alwayslastline
+hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"
+defscrollback 5000' >~/.screenrc
+fi
+# set a larger font for mintty
+# hmm. doesn't exist at run time :/
+# sed -i 's/^FontHeight=[0-9]*$/FontHeight=14/' .minttyrc
+# let's see if this helps
+echo "FontHeight=14" >>.minttyrc
 echo
-echo "Done!"
-echo "Готово!"
-echo "Fertig!"
+/usr/sbin/lighttpd -f $LCONF
+echo "Done! Start the bot with ./startallbots.sh after adding farms using your browser."
+echo "Fertig! Starte den Bot mit ./startallbots.sh nach dem Hinzufuegen von Farmen im Browser."
 sleep 5

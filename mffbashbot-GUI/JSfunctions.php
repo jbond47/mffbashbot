@@ -1,6 +1,6 @@
 <?php
-// Dynamic JavaScript for Harry's My Free Farm Bash Bot (front end)
-// Copyright 2016-18 Harun "Harry" Basalamah
+// Dynamic JavaScript for My Free Farm Bash Bot (front end)
+// Copyright 2016-22 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -9,18 +9,8 @@
 // quoting MDM: "Code samples added on or after August 20, 2010 are in the public domain. No licensing notice is necessary, but if you need one, you can [...]"
 // :)
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// For license see LICENSE file
 //
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 echo <<<EOT
 <script type="text/javascript">
@@ -51,11 +41,51 @@ function sanityCheck(elSel, elSelDest, amountpos) {
  return true;
 }
 
-function insertOptionBefore(elSel, elSelDest, amountpos)
-{
+function multiplierIsValid(multiplier) {
+ if (multiplier >= 1 && multiplier <= 99)
+  return true;
+ else
+  return false;
+}
+
+function insertOptionBefore(elSel, elSelDest, amountpos) {
  if (!sanityCheck(elSel, elSelDest, amountpos))
   return false;
- if (elSel.selectedIndex >= 0) {
+ elSelDest.style.minWidth = null;
+ var multiplier = document.getElementById("multi").value;
+ if (!multiplierIsValid(multiplier))
+  multiplier = 1;
+ for (var i = 0; i < multiplier; i++) {
+  if (elSel.selectedIndex >= 0) {
+   var elOptNew = document.createElement('option');
+   if (amountpos > 0) {
+    elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
+    elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
+   } else {
+    elOptNew.text = elSel.options[elSel.selectedIndex].text;
+    elOptNew.value = elSel.options[elSel.selectedIndex].value;
+   }
+   var elOptOld = elSelDest.options[elSelDest.selectedIndex];
+   try {
+    elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
+   }
+   catch(ex) {
+    elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
+   }
+  }
+ }
+ document.getElementById("multi").value = 1;
+ return false;
+}
+
+function appendOptionLast(elSel, elSelDest, amountpos) {
+ if (!sanityCheck(elSel, elSelDest, amountpos))
+  return false;
+ elSelDest.style.minWidth = null;
+ var multiplier = document.getElementById("multi").value;
+ if (!multiplierIsValid(multiplier))
+  multiplier = 1;
+ for (var i = 0; i < multiplier; i++) {
   var elOptNew = document.createElement('option');
   if (amountpos > 0) {
    elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
@@ -64,42 +94,18 @@ function insertOptionBefore(elSel, elSelDest, amountpos)
    elOptNew.text = elSel.options[elSel.selectedIndex].text;
    elOptNew.value = elSel.options[elSel.selectedIndex].value;
   }
-  var elOptOld = elSelDest.options[elSelDest.selectedIndex];
   try {
-   elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
-   return false;
+   elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
   }
   catch(ex) {
-   elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
-   return false;
+   elSelDest.add(elOptNew); // IE only
   }
  }
+ document.getElementById("multi").value = 1;
+ return false;
 }
 
-function appendOptionLast(elSel, elSelDest, amountpos)
-{
- if (!sanityCheck(elSel, elSelDest, amountpos))
-  return false;
- var elOptNew = document.createElement('option');
- if (amountpos > 0) {
-  elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
-  elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
- } else {
-  elOptNew.text = elSel.options[elSel.selectedIndex].text;
-  elOptNew.value = elSel.options[elSel.selectedIndex].value;
- }
- try {
-  elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
-  return false;
- }
- catch(ex) {
-  elSelDest.add(elOptNew); // IE only
-  return false;
- }
-}
-
-function removeOptionSelected(elSelDest)
-{
+function removeOptionSelected(elSelDest) {
  for (var i = elSelDest.length - 1; i>=0; i--) {
   if (elSelDest.options[i].selected) {
    elSelDest.remove(i);
@@ -108,50 +114,115 @@ function removeOptionSelected(elSelDest)
  return false;
 }
 
+function removeOptionAll(elSelDest) {
+ var currentWidth = elSelDest.offsetWidth;
+ elSelDest.style.minWidth = currentWidth + "px";
+ for (var i = elSelDest.length - 1; i >= 0; i--)
+  elSelDest.remove(0);
+ return false;
+}
+
 function updateBotStatus() {
  var sUser = document.venueselect.username.value;
- var sData = "username=" + sUser + "&action=getbotstatus";
- xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function() {
-  if (xhttp.readyState == 4 && xhttp.status == 200)
-   document.getElementById("botstatus").innerHTML = xhttp.responseText;
- }
- xhttp.open("POST", "botaction.php", true);
- xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- xhttp.send(sData);
-
- sData = "username=" + sUser + "&action=getlastruntime";
- xhttp2 = new XMLHttpRequest();
- xhttp2.onreadystatechange = function() {
-  if (xhttp2.readyState == 4 && xhttp.status == 200)
-   document.getElementById("lastruntime").innerHTML = xhttp2.responseText;
- }
- xhttp2.open("POST", "botaction.php", true);
- xhttp2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- xhttp2.send(sData);
- 
- window.setTimeout(updateBotStatus, 30000);
+ var eSource = new EventSource('botSSE.php?username=' + sUser);
+ eSource.onerror = function() {
+  document.getElementById("botstatus").innerHTML = "[{$strings['pleasewait']}]";
+ };
+ eSource.addEventListener("botstatus", function(e) {
+  document.getElementById("botstatus").innerHTML = e.data;
+ }, false);
+ eSource.addEventListener("lastbotruntime", function(e) {
+  document.getElementById("lastruntime").innerHTML = e.data;
+ }, false);
+ eSource.addEventListener("lastboterror", function(e) {
+//  if (e.data === "noerror") {
+//   document.getElementById("bottombar").style.display = "none";
+//   return;
+//  }
+  document.getElementById("lasterror").innerHTML = e.data;
+  document.getElementById("bottombar").style.display = "block";
+ }, false);
 }
 
 function saveMisc() {
- var i, v;
- var aOptions = ['lottoggle', 'vehiclemgmt5', 'vehiclemgmt6', 'carefood',
- 'caretoy', 'careplushy', 'freegardenspeedupfarm', 'startvetroledifficulty'];
+ var i, j, v;
+ var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
+ 'vehiclemgmt7', 'vehiclemgmt8', 'transO5', 'transO6', 'transO7', 'transO8',
+ 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto',
+ 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
+ 'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi',
+ 'sushibardessert', 'scoutfood'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'megafieldplanttoggle', 'olympiaeventtoggle',
- 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'startpetbreedingtoggle'];
+ 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
+ 'cowracepvptoggle', 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle',
+ 'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
+ 'calendareventtoggle', 'pentecosteventtoggle', 'trimlogstocktoggle', 'removeweedtoggle',
+ 'harvestvinetoggle', 'harvestvineinautumntoggle', 'restartvinetoggle', 'removevinetoggle',
+ 'buyvinetillsunnytoggle', 'vinefullservicetoggle', 'doinsecthoteltoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
  for (i = 0; i < aOptions.length; i++) {
-  v = document.getElementById(aOptions[i]);
-  sData += "&" + aOptions[i] + "=" + v.options[v.selectedIndex].value;
+  if (document.getElementById(aOptions[i]) !== null) {
+   v = document.getElementById(aOptions[i]);
+   sData += "&" + aOptions[i] + "=" + v.options[v.selectedIndex].value;
+  } else {
+   sData += "&" + aOptions[i] + "=0";
+  }
  }
  for (i = 0; i < aToggles.length; i++) {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
  }
+ for (i = 1; i <= 17; i++) {
+  v = document.getElementById("flowerarrangementslot" + i);
+  sData += "&flowerarrangementslot" + i + "=" + v.options[v.selectedIndex].value;
+ }
+ for (i = 1; i <= 15; i++) {
+  v = document.getElementById("racecowslot" + i);
+  sData += "&racecowslot" + i + "=" + v.options[v.selectedIndex].value;
+ }
+ for (i = 1; i <= 4; i++) {
+  v = document.getElementById("fruitstallslot" + i);
+  sData += "&fruitstallslot" + i + "=" + v.options[v.selectedIndex].value;
+  if (i == 4)
+   break;
+  v = document.getElementById("fruitstall2slot" + i);
+  sData += "&fruitstall2slot" + i + "=" + v.options[v.selectedIndex].value;
+ }
+ var aFishingstuff = ['speciesbait', 'raritybait', 'fishinggear', 'preferredbait'];
+ for (i = 1; i <= 3; i++) {
+  for (j = 0; j < aFishingstuff.length; j++) {
+   if (document.getElementById(aFishingstuff[j] + i) !== null) {
+    v = document.getElementById(aFishingstuff[j] + i);
+    sData += "&" + aFishingstuff[j] + i + "=" + v.options[v.selectedIndex].value;
+   } else {
+    sData += "&" + aFishingstuff[j] + i + "=0";
+   }
+  }
+ }
+ j = (document.querySelectorAll("[id*=autobuyitem]")).length;
+ sData += "&autobuyitems=";
+ for (i = 0; i < j; i++) {
+  if (document.querySelectorAll("[id*=autobuyitem]")[i].checked)
+   sData += (document.querySelectorAll("[id*=autobuyitem]"))[i].value + ",";
+ }
+ if (sData.substring(sData.length-1, sData.length) == ",")
+  sData = sData.substring(0, sData.length - 1);
+ j = (document.querySelectorAll("[id*=btfly]")).length;
+ sData += "&autobuybutterflies=";
+ if (j > 0) {
+  for (i = 0; i < j; i++) {
+   if (document.querySelectorAll("[id*=btfly]")[i].checked)
+    sData += (document.querySelectorAll("[id*=btfly]"))[i].value + ",";
+  }
+ } else {
+  sData += "0";
+ }
+ if (sData.substring(sData.length-1, sData.length) == ",")
+  sData = sData.substring(0, sData.length - 1);
+
  AJAXsave(sData);
  return false;
 }
@@ -164,16 +235,19 @@ function saveConfig() {
  switch (sFarm) {
   case "forestry":
   case "farmersmarket":
+  case "farmersmarket2":
   case "foodworld":
   case "city2":
    if (sFarm == "farmersmarket")
     var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
+   if (sFarm == "farmersmarket2")
+    var fmpos = ["cowracing", "fishing", "scouts"];
    if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
    if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
    if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28"];
 
    for (k = 0; k <= (fmpos.length - 1); k++) {
     var i = fmpos[k];
@@ -252,16 +326,24 @@ function displayNotification(sTitle, sBody, bConfirm, sTag) {
  }
 }
 
-function showHideOptions() {
- var div = document.getElementById("optionspane");
+function showHideOptions(element) {
+ var j = (document.querySelectorAll("[id*=pane]")).length, i;
+ var div = document.getElementById(element);
  if (div.style.display !== "none") {
   div.style.display = "none";
   return false;
-  }
+ }
  else {
-  div.style.display = "inline-block";
-  return false
+  for (i = 0; i < j; i++) {
+   // close all other panes
+   div = document.getElementById((document.querySelectorAll("[id*=pane]"))[i].id);
+   if (div.style.display !== "none")
+    div.style.display = "none";
   }
+  // all panes are closed, let's open the desired one
+  (document.getElementById(element)).style.display = "inline-block";
+  return false;
+ }
 }
 
 function confirmUpdate() {
