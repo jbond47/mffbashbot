@@ -1,5 +1,5 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-22 Harun "Harry" Basalamah
+# Copyright 2016-23 Harun "Harry" Basalamah
 #
 # For license see LICENSE file
 
@@ -104,18 +104,23 @@ function getInnerInfoData {
 }
 
 function getOlympiaData {
- sFile=$1
+ local sFile=$1
  WGETREQ "${AJAXMAIN}action=olympia_init" $sFile
 }
 
 function getCalendarData {
- sFile=$1
+ local sFile=$1
  WGETREQ "${AJAXFARM}mode=calendar_init" $sFile
 }
 
 function getMerchantData {
  local sFile=$1
  WGETREQ "${AJAXCITY}shopid=1&mode=shopinit" $sFile
+}
+
+function getEventGardenData {
+ local sFile=$1
+ WGETREQ "${AJAXFARM}mode=eventgarden_init" $sFile
 }
 
 function doFarm {
@@ -816,7 +821,7 @@ function doFarmersMarketFlowerPots {
   if [ $iPID -ne 0 ]; then
    sendAJAXFarmRequest "mode=flowerslot_remove&farm=1&position=1&set=${iSlot}:1,"
    sleep 1
-   echo "Planting arrangement ${iPID} to flower pot ${iSlot}..."
+   echo "Planting arrangement ${iPID} in flower pot ${iSlot}..."
    sendAJAXFarmRequest "mode=flowerslot_plant&farm=1&position=1&set=${iSlot}:${iPID},"
   fi
  done
@@ -914,10 +919,10 @@ function harvestMonsterFruitHelper {
 }
 
 function startMonsterFruitHelper {
- sFarm=$1
- sPosition=$2
- iSlot=$3
- iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
  sendAJAXFarmRequest "mode=megafruit_buyobject&farm=1&position=1&id=${iPID}&oid=${iPID}"
 }
 
@@ -1573,7 +1578,7 @@ function checkVineYard {
     startVineYardSeason $iSlot $((iSeason + 1))
    fi
    if [ "${sWinterCut:-0}" != "0" ]; then
-    echo "Performing ${sWinterCut} winter cut on vine in slot $iSlot"
+    echo "Performing ${sWinterCut} winter cut on vine in slot ${iSlot}..."
     sendAJAXFarmRequest "slot=${iSlot}&id=${sWinterCut}&mode=vineyard_plant_wintercut"
    fi
    startVineYardSeason $iSlot 1
@@ -1689,6 +1694,7 @@ function getFreeBarrelSlot {
   iType=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels["'${iSlot}'"].type' $FARMDATAFILE)
   iMaxRipeningTime=$($JQBIN '.updateblock.farmersmarket.vineyard.config.barrels["'${iType}'"].time' $FARMDATAFILE)
   iPercent=$(awk 'BEGIN { printf "%.2f", sqrt(100 - '${iRemaining}' * 100 / '${iMaxRipeningTime}') * 10 }')
+  iPercent=${iPercent/,/.} # overcome locales with a ',' as decimal point
   if [ ${iPercent%.*} -lt $iBottlingMinPercent ]; then
    continue
   fi
@@ -2913,6 +2919,22 @@ function startSushiBarNP {
  startSushiBar $1 $2 $3
 }
 
+function harvestEventGarden {
+ sendAJAXFarmRequest "mode=eventgarden_harvest_all"
+}
+
+function startEventGarden {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ sendAJAXFarmRequest "plant=${iPID}&mode=eventgarden_autoplant"
+}
+
+function startEventGardenNP {
+ startEventGarden $1 $2 $3
+}
+
 function getAnimalQueueLength {
  local iAnimalQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | length' $FARMDATAFILE)
  return $iAnimalQueueLength
@@ -3586,6 +3608,7 @@ function checkCalendarEvent {
 }
 
 function checkPentecostEvent {
+ local bEventGardenIsUsable
  local iWaterNeeded
  local iWaterAvailable
  local iFertiliserNeeded
@@ -3593,6 +3616,15 @@ function checkPentecostEvent {
  local bPentecostEventRunning=$($JQBIN '.updateblock.menue.pentecostevent != 0' $FARMDATAFILE)
  if [ "$bPentecostEventRunning" = "false" ]; then
   return
+ fi
+ # take care of plants in event garden
+ getEventGardenData $TMPFILE
+ bEventGardenIsUsable=$($JQBIN '.datablock.data.remain > 0' $TMPFILE)
+ if [ "$bEventGardenIsUsable" = "true" ]; then
+  if checkRipePlotInEventGarden; then
+   echo "Doing event field..."
+   doFarm city2 eventgarden 0
+  fi
  fi
  iWaterNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.water.amount' $FARMDATAFILE)
  iFertiliserNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.fertilizer.amount' $FARMDATAFILE)
@@ -3614,6 +3646,20 @@ function checkPentecostEvent {
    echo "Not enough fertiliser available for the peony bush"
   fi
  fi
+}
+
+function checkEventGarden {
+ local bEventGardenIsUsable
+ getEventGardenData $TMPFILE
+ bEventGardenIsUsable=$($JQBIN '.datablock?.data?.remain? > 0' $TMPFILE 2>/dev/null)
+ if [ -z "$bEventGardenIsUsable" ] || [ "$bEventGardenIsUsable" = "false" ]; then
+  return 1
+ fi
+ if checkRipePlotInEventGarden; then
+  echo "Doing event field..."
+  doFarm city2 eventgarden 0
+ fi
+ return 0
 }
 
 function checkLoginBonus {
@@ -3759,6 +3805,14 @@ function removeWeed {
    echo
   fi
  fi
+}
+
+function checkRipePlotInEventGarden {
+ local bHasNegatives=$($JQBIN '[.datablock.data.tiles?[] | select(.remain < 0)][0] | type == "object"' $TMPFILE)
+ if [ "$bHasNegatives" = "true" ]; then
+  return 0
+ fi
+ return 1
 }
 
 function checkLoginNews {

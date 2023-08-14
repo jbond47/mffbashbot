@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Update handler for My Free Farm Bash Bot
-# Copyright 2016-22 Harun "Harry" Basalamah
+# Copyright 2016-23 Harun "Harry" Basalamah
 #
 # For license see LICENSE file
 #
@@ -64,6 +64,7 @@ city2/trans28
 city2/tools
 city2/cowracepvp
 city2/windmill
+city2/eventgarden
 farmersmarket/flowerarea
 farmersmarket/monsterfruit
 farmersmarket/nursery
@@ -96,9 +97,9 @@ rm -f mffbashbot/updateTrigger
 if [ -d ~/mffbashbot ]; then
  cd ~/mffbashbot
  for FARMNAME in $(ls -d */ | tr -d '/'); do
-  if [ -f "$FARMNAME/$STATUSFILE" ]; then
+  if [ -e "$FARMNAME"/"$STATUSFILE" ]; then
    echo -n "Waiting for farm $FARMNAME to finish its iteration...${SPIN[0]}"
-   while [ -f "$FARMNAME/$STATUSFILE" ]; do
+   while [ -e "$FARMNAME"/"$STATUSFILE" ]; do
     for S in "${SPIN[@]}"; do
      echo -ne "\b$S"
      sleep 0.25
@@ -110,10 +111,10 @@ if [ -d ~/mffbashbot ]; then
 fi
 
 cd
-echo "Updating My Free Farm Bash Bot (Mod)..."
+echo "Updating My Free Farm Bash Bot..."
 rm -f master.zip 2>/dev/null
 rm -rf mffbashbot-master 2>/dev/null
-wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
+wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
 unzip -q master.zip
@@ -153,8 +154,6 @@ if [ -d ~/mffbashbot ]; then
        ;;
      forestry/forestry)
        touch ${DIRS[$INDEX]}/forestry
-       ;;
-     farmersmarket2)
        ;;
      *)
        touch ${DIRS[$INDEX]}/0
