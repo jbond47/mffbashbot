@@ -1,5 +1,5 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-23 Harun "Harry" Basalamah
+# Copyright 2016-24 Harry Basalamah
 #
 # For license see LICENSE file
 
@@ -12,7 +12,7 @@ function WGETREQ {
  iRetVal=$?
  echo "$sResponse" | if grep -q "dbfehler\.php" || [ $iRetVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
-  # kill -SIGHUP "$$"
+  kill -SIGHUP "$$"
  else
   echo "$sResponse" >>$LOGFILE
  fi
@@ -93,6 +93,11 @@ function getWindMillData {
 function getPanData {
  local sFile=$1
  WGETREQ "${AJAXFARM}mode=showpan&farm=1&position=0" $sFile
+}
+
+function getGreenHouseData {
+ local sFile=$1
+ WGETREQ "${AJAXFARM}mode=greenhouse_init" $sFile
 }
 
 function getInnerInfoData {
@@ -1799,7 +1804,7 @@ function checkScouts {
   iCount=1
   jData='{"scouts":{"1":0},"itemid":0}'
   for iScoutID in $aScoutIDs; do
-   if ! checkScoutEnergy $iScoutID $iTaskNeededEnergy $iPID; then
+   if ! checkScoutEnergy $iScoutID $iTaskNeededEnergy $iPID $sTaskType; then
     logToFile "${FUNCNAME}: Unable to feed scout"
     unset jData
     break
@@ -1843,10 +1848,22 @@ function checkScoutEnergy {
  local iSlot
  local iTaskNeededEnergy=$2
  local iPID=$3
+ local sTaskType=$4
+ local sDebuffValue=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].traits["debuff"].type' $FARMDATAFILE) # can also receive a float
  local iEnergyPerFood=$($JQBIN '.updateblock.farmersmarket.scouts.config.products["'${iPID}'"].energy' $FARMDATAFILE)
  local iScoutEnergy=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].energy' $FARMDATAFILE)
  local iFoodDiff
  local iAmountInStock
+ # issue #106
+ if [ "$sDebuffValue" = "energy" ]; then
+  sDebuffValue=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].traits["debuff"].skill' $FARMDATAFILE)
+  if [ "$sDebuffValue" = "$sTaskType" ]; then
+   # re-calculate needed energy
+   sDebuffValue=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].traits["debuff"].amount' $FARMDATAFILE)
+   # need to emulate JS' Math.ceil() here
+   iTaskNeededEnergy=$(awk 'BEGIN { printf "%.0f", ('${iTaskNeededEnergy}' * ('${sDebuffValue}' + 1)) + 0.5 }')
+  fi
+ fi
  if [ $iScoutEnergy -ge $iTaskNeededEnergy ]; then
   return 0
  fi
@@ -2465,6 +2482,14 @@ function checkSendGoodsToMainFarm {
      else
       iPIDMin=950
       iPIDMax=957
+     fi
+     ;;
+  9) if ! grep -q "transO9 = 0" $CFGFILE && grep -q "transO9 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO9)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=998
+      iPIDMax=998
      fi
      ;;
  esac
@@ -3305,6 +3330,14 @@ function redeemPuzzlePartsPacks {
  fi
 }
 
+function checkGreenHouseBonus {
+ getGreenHouseData $FARMDATAFILE
+ if checkTimeRemaining '.datablock.data.remain'; then
+  echo "Collecting points bonus from green house..."
+  sendAJAXFarmRequest "mode=greenhouse_get_bonus"
+ fi
+}
+
 function checkPanBonus {
  # function by jbond47, update by maiblume & jbond47
  getPanData "$FARMDATAFILE"
@@ -3567,16 +3600,19 @@ function checkDeliveryEvent {
 
 function checkOlympiaEvent {
  getOlympiaData $FARMDATAFILE
- local iBerriesNeeded=20
+ sleep 2
+ local iMaxBerries=$($JQBIN '.datablock.config?.berries_full? // 99999' $FARMDATAFILE) # make sure we get a number
+ local iBerriesNeeded=$((iMaxBerries / 10))
  local iBerriesAvailable
  local iEnergy
  local iOlympiayEventRemain=$($JQBIN '.datablock.remain?' $FARMDATAFILE)
  if [ $iOlympiayEventRemain -gt 0 ] 2>/dev/null; then
-  iBerriesAvailable=$($JQBIN '.datablock.data.berries' $FARMDATAFILE)
+  iBerriesAvailable=$($JQBIN '.datablock.data.berries // 0' $FARMDATAFILE)
   iEnergy=$($JQBIN '.datablock.energy' $FARMDATAFILE)
   if [ $iEnergy -lt 100 ] && [ $iBerriesAvailable -ge $iBerriesNeeded ]; then
    echo "Re-filling 10% energy..."
    sendAJAXMainRequest "amount=10&action=olympia_entry"
+#   echo "DEBUG: Energy = $iEnergy"
   fi
  fi
 }
@@ -3608,7 +3644,6 @@ function checkCalendarEvent {
 }
 
 function checkPentecostEvent {
- local bEventGardenIsUsable
  local iWaterNeeded
  local iWaterAvailable
  local iFertiliserNeeded
@@ -3616,15 +3651,6 @@ function checkPentecostEvent {
  local bPentecostEventRunning=$($JQBIN '.updateblock.menue.pentecostevent != 0' $FARMDATAFILE)
  if [ "$bPentecostEventRunning" = "false" ]; then
   return
- fi
- # take care of plants in event garden
- getEventGardenData $TMPFILE
- bEventGardenIsUsable=$($JQBIN '.datablock.data.remain > 0' $TMPFILE)
- if [ "$bEventGardenIsUsable" = "true" ]; then
-  if checkRipePlotInEventGarden; then
-   echo "Doing event field..."
-   doFarm city2 eventgarden 0
-  fi
  fi
  iWaterNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.water.amount' $FARMDATAFILE)
  iFertiliserNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.fertilizer.amount' $FARMDATAFILE)
@@ -3653,7 +3679,11 @@ function checkEventGarden {
  getEventGardenData $TMPFILE
  bEventGardenIsUsable=$($JQBIN '.datablock?.data?.remain? > 0' $TMPFILE 2>/dev/null)
  if [ -z "$bEventGardenIsUsable" ] || [ "$bEventGardenIsUsable" = "false" ]; then
-  return 1
+  # 2nd check
+  bEventGardenIsUsable=$($JQBIN '.updateblock.missingproductions.eventgarden["1"] != 0' $FARMDATAFILE 2>/dev/null)
+  if [ "$bEventGardenIsUsable" = "false" ]; then
+   return 1
+  fi
  fi
  if checkRipePlotInEventGarden; then
   echo "Doing event field..."

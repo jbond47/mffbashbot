@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Update handler for My Free Farm Bash Bot
-# Copyright 2016-23 Harun "Harry" Basalamah
+# Copyright 2016-24 Harry Basalamah
 #
 # For license see LICENSE file
 #
@@ -56,11 +56,18 @@ DIRS=( 1/1
 8/4
 8/5
 8/6
+9/1
+9/2
+9/3
+9/4
+9/5
+9/6
 city2/powerups
 city2/trans25
 city2/trans26
 city2/trans27
 city2/trans28
+city2/trans29
 city2/tools
 city2/cowracepvp
 city2/windmill
@@ -97,9 +104,9 @@ rm -f mffbashbot/updateTrigger
 if [ -d ~/mffbashbot ]; then
  cd ~/mffbashbot
  for FARMNAME in $(ls -d */ | tr -d '/'); do
-  if [ -e "$FARMNAME"/"$STATUSFILE" ]; then
+  if [ -f "$FARMNAME/$STATUSFILE" ]; then
    echo -n "Waiting for farm $FARMNAME to finish its iteration...${SPIN[0]}"
-   while [ -e "$FARMNAME"/"$STATUSFILE" ]; do
+   while [ -f "$FARMNAME/$STATUSFILE" ]; do
     for S in "${SPIN[@]}"; do
      echo -ne "\b$S"
      sleep 0.25

@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for My Free Farm Bash Bot (front end)
-// Copyright 2016-23 Harun "Harry" Basalamah
+// Copyright 2016-24 Harry Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -25,15 +25,15 @@ function sanityCheck(elSel, elSelDest, amountpos) {
   return false;
  }
  if (elSel.id == "itemposmonsterfruit") {
-  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
+  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 12 && !(elSelDest.id == "qselmonsterfruit3")) {
    alert("{$strings['wrongqueue']}");
    return false;
   }
-  if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
+  if (elSel.selectedIndex >= 13 && elSel.selectedIndex <= 24 && !(elSelDest.id == "qselmonsterfruit2")) {
    alert("{$strings['wrongqueue']}");
    return false;
   }
-  if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
+  if (elSel.selectedIndex >= 25 && !(elSelDest.id == "qselmonsterfruit1")) {
    alert("{$strings['wrongqueue']}");
    return false;
   }
@@ -147,9 +147,9 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vehiclemgmt8', 'transO5', 'transO6', 'transO7', 'transO8',
- 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto',
- 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
+ 'vehiclemgmt7', 'vehiclemgmt8', 'vehiclemgmt9', 'transO5', 'transO6', 'transO7',
+ 'transO8', 'transO9', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
+ 'autobuyrefillto', 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
  'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi',
  'sushibardessert', 'scoutfood'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
@@ -160,7 +160,8 @@ function saveMisc() {
  'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
  'calendareventtoggle', 'pentecosteventtoggle', 'trimlogstocktoggle', 'removeweedtoggle',
  'harvestvinetoggle', 'harvestvineinautumntoggle', 'restartvinetoggle', 'removevinetoggle',
- 'buyvinetillsunnytoggle', 'vinefullservicetoggle', 'doinsecthoteltoggle', 'doeventgardentoggle'];
+ 'buyvinetillsunnytoggle', 'vinefullservicetoggle', 'doinsecthoteltoggle', 'doeventgardentoggle',
+ 'greenhousetoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
@@ -247,7 +248,7 @@ function saveConfig() {
    if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
    if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "eventgarden"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "trans29", "eventgarden"];
 
    for (k = 0; k <= (fmpos.length - 1); k++) {
     var i = fmpos[k];

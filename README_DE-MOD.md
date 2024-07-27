@@ -8,7 +8,7 @@ Zusätzliche Funktionen:
 
 - Optionaler Autostart der Tierarztpraxis mit auswählbarem Schwierigkeitsgrad (Idee und Codebeispiele von Jens und Harry aus dem MyFreeFarm Berater Forum)
 
-- Optionaler Autostart der Tieraufzucht (Idee und Codebeispiele von Jens aus dem MyFreeFarm Berater Forum). Der Bot wählt automatisch ein vefügbares Tier, beginnend mit den höchstwertigen.
+- Optionaler Autostart der Tieraufzucht (Idee und Codebeispiele von Jens aus dem MyFreeFarm Berater Forum). Der Bot wählt automatisch ein verfügbares Tier, beginnend mit den höchstwertigen.
 
 - Güterhof wird automatisch gestartet
 

@@ -1,6 +1,6 @@
 <?php
 // Functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-23 Harun "Harry" Basalamah
+// Copyright 2016-24 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -24,8 +24,9 @@ function CreateOptionsWithIDfromArray($arr) {
 }
 function CreateMonsterOptions() {
  global $monsterlist;
- foreach (func_get_args() as $i)
-  echo "<option value=\"$i\">$monsterlist[$i]</option>\n";
+ if (isset($monsterlist[1]))
+    foreach (func_get_args() as $i)
+        echo "<option value=\"$i\">$monsterlist[$i]</option>\n";
 }
 function CreateForestryOptions() {
  global $forestryproductlist;
@@ -34,13 +35,15 @@ function CreateForestryOptions() {
 }
 function CreateFoodworldOptions() {
  global $foodworldproductlist;
- foreach (func_get_args() as $i)
-  echo "<option value=\"$i\">$foodworldproductlist[$i]</option>\n";
+ if (isset($foodworldproductlist[1]))
+    foreach (func_get_args() as $i)
+        echo "<option value=\"$i\">$foodworldproductlist[$i]</option>\n";
 }
 function CreateMegaFieldOptions() {
  global $megafieldvehicleslist;
- foreach (func_get_args() as $i)
-  echo "<option value=\"$i\">$megafieldvehicleslist[$i]</option>\n";
+ if (isset($megafieldvehicleslist[1]))
+    foreach (func_get_args() as $i)
+        echo "<option value=\"$i\">$megafieldvehicleslist[$i]</option>\n";
 }
 function CreateWindMillOptions() {
  global $windmillproductlist;
@@ -222,7 +225,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "monsterfruit":
         // Monsterfruchtzucht
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateMonsterOptions(1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26);
+        CreateMonsterOptions(1, 2, 3, 4, 5, 6, 7, 27, 28, 29, 30, 31, 10, 11, 12, 13, 14, 15, 16, 32, 33, 34, 35, 36, 20, 21, 22, 23, 24, 25, 26, 37, 38, 39, 40, 41);
         echo "</select>\n";
         break;
   case "vet":
@@ -308,7 +311,8 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "trans26":
   case "trans27":
   case "trans28":
-        // Transport -> Farm 5 / 6 / 7 / 8
+  case "trans29":
+        // Transport -> Farms 5 - 9
         echo "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957);
         echo "</select>
@@ -323,7 +327,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "eventgarden":
         // Event-Acker
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4", "waterbattle1", "waterbattle2", "waterbattle3", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3");
+        CreateEventGardenOptions("pentecost1", "pentecost5", "pentecost2", "pentecost6", "pentecost3", "pentecost7", "pentecost4", "pentecost8", "waterbattle1", "waterbattle2", "waterbattle3", "waterbattle4", "waterbattle5", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame1", "tinkergame2", "tinkergame3", "tinkergame4", "tinkergame5", "tinkergame6", "invasion1", "invasion2", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5", "rainbowevent1", "rainbowevent2", "rainbowevent3", "rainbowevent4", "rainbowevent5", "collectevent1", "collectevent2", "collectevent3", "collectevent4", "collectevent5");
         echo "</select>\n";
         break;
   default:
@@ -380,6 +384,7 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "trans26":
   case "trans27":
   case "trans28":
+  case "trans29":
 	$buildingType = "AutoTrans";
 	break;
   case "powerups":
@@ -394,7 +399,7 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
   case "3":
-  case "4":  
+  case "4":
   if ($farm === "forestry") {
     $buildingType = "ForestryBuilding";
   break;

@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086,SC2155
 #
 # My Free Farm Bash Bot
-# Copyright 2016-22 Harun "Harry" Basalamah
+# Copyright 2016-24 Harry Basalamah
 #
 # For license see LICENSE file
 
@@ -104,6 +104,14 @@ checkSoftwareVersions
 umask 002
 echo $BASHPID > "$PIDFILE"
 
+# this is just a goodie. _might_ require kernel.sched_autogroup_enabled to be set to '0'
+# 19 would be the highest nice level (lowest prio), -19 would be the lowest nice level as in 'not nice at all for hogging more CPU time'
+# uncomment and set to your needs, if needed
+#if command -v renice &>/dev/null; then
+# NICELVL=19
+# renice -n $NICELVL $$
+#fi
+
 while (true); do
  WORKERQUEUE=$((++WORKERQUEUE))
  ERRCOUNT=0
@@ -173,7 +181,7 @@ fi
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -246,7 +254,7 @@ fi
    fi
   fi
 
-  for FARM in {1..8}; do
+  for FARM in {1..9}; do
    PLACEEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
    if [ "$PLACEEXISTS" = "false" ]; then
     # echo "Skipping farm ${FARM}"
@@ -548,6 +556,9 @@ fi
   if ! grep -q "vehiclemgmt8 = 0" $CFGFILE && grep -q "vehiclemgmt8 = " $CFGFILE; then
    checkVehiclePosition 8 4
   fi
+  if ! grep -q "vehiclemgmt9 = 0" $CFGFILE && grep -q "vehiclemgmt9 = " $CFGFILE; then
+   checkVehiclePosition 9 5
+  fi
 
   if grep -q "sendfarmiesaway = 1" $CFGFILE; then
    echo "Checking for waiting farmies..."
@@ -558,6 +569,16 @@ fi
    echo "Checking for waiting flower farmies..."
    #checkFarmies flowerfarmie
    checkFlowerFarmies
+  fi
+
+  if grep -q "doeventgarden = 1" $CFGFILE; then
+   echo "Checking for pending tasks in event garden..."
+   if ! checkEventGarden; then
+    # turn off event garden feature
+    sed -i 's/doeventgarden = 1/doeventgarden = 0/' $CFGFILE
+   else
+    sed -i 's/doeventgarden = 0/doeventgarden = 1/' $CFGFILE
+   fi
   fi
 
   # daily actions
@@ -644,6 +665,11 @@ fi
   if grep -q "doseedbox = 1" $CFGFILE; then
    echo "Checking for points bonus from seed box..."
    checkPanBonus
+  fi
+
+  if grep -q "dogreenhouse = 1" $CFGFILE; then
+   echo "Checking for points bonus from green house..."
+   checkGreenHouseBonus
   fi
 
   if [ $PLAYERLEVELNUM -ge 8 ]; then
