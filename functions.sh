@@ -8,7 +8,7 @@ function WGETREQ {
  local sOut=${2:-/dev/null}
  local sResponse
  local iRetVal
- sResponse=$(wget -nv -T10 -o - --output-document="$sOut" --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
+ sResponse=$(wget -nv --no-check-certificate -T10 -o - --output-document="$sOut" --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
  iRetVal=$?
  echo "$sResponse" | if grep -q "dbfehler\.php" || [ $iRetVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
@@ -33,9 +33,9 @@ function exitBot {
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   # don't use WGETREQ as we wouldn't like to doublekill ourself
-  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  wget -nv --no-check-certificate -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6] "$LASTERRORFILE"
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-*-[1-6] "$LASTERRORFILE"
  fi
  case "$sSignal" in
     INT)
@@ -58,8 +58,8 @@ function restartBot {
  echo -e "\n"
  logToFile "My Free Farm Bash Bot encountered a problem"
  echo "Attempting to log off..."
- wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-8]-[1-6] "$LASTERRORFILE"
+ wget -nv --no-check-certificate -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+ rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-*-[1-6] "$LASTERRORFILE"
  echo "Restarting bot..."
  cd ..
  exec /usr/bin/env bash mffbashbot.sh $MFFUSER
@@ -2492,8 +2492,16 @@ function checkSendGoodsToMainFarm {
       iPIDMax=998
      fi
      ;;
+  10) if ! grep -q "transO10 = 0" $CFGFILE && grep -q "transO10 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO10)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=1100
+      iPIDMax=1106
+     fi
+     ;;
  esac
- aPIDs=$($JQBIN -r '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}' or (.pid | tonumber) == '9').pid | tonumber' $FARMDATAFILE)
+ aPIDs=$($JQBIN -r '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}' or (.pid | tonumber) == '10').pid | tonumber' $FARMDATAFILE)
  inumberPIDs=$(echo "$aPIDs" | wc -l)
  for iPID in $aPIDs; do
   # echo -n "."
@@ -3908,7 +3916,7 @@ function sendAJAXFarmUpdateRequest {
  local sAJAXSuffix=$1
  local sResponse
  local iRetVal
- sResponse=$(wget -nv -T10 -o - --output-document=$TMPFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix})
+ sResponse=$(wget -nv --no-check-certificate -T10 -o - --output-document=$TMPFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix})
  iRetVal=$?
  echo "$sResponse" | if grep -q "dbfehler\.php" || [ $iRetVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
@@ -3960,7 +3968,7 @@ function sendAJAXForestryRequest {
 function sendAJAXFoodworldRequest {
  local sAJAXSuffix=$1
 # keep food world status current. this shouldn't break anything
-wget -nv -T10 -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFOOD}${sAJAXSuffix}
+wget -nv --no-check-certificate -T10 -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFOOD}${sAJAXSuffix}
 }
 
 function sendAJAXCityRequest {

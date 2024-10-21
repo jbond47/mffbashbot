@@ -83,6 +83,9 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         if ($farm == 8)
          CreateOptions(950, 951, 952, 953, 954, 955, 956, 957);
         else
+        if ($farm == 10)
+         CreateOptions(1100, 1101, 1102, 1103, 1104, 1105, 1106);
+        else
          CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 153, 154, 158, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
         echo "</select>\n";
         break;
@@ -312,9 +315,10 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "trans27":
   case "trans28":
   case "trans29":
-        // Transport -> Farms 5 - 9
+  case "trans210":
+        // Transport -> Farms 5 - 10
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957);
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 701, 703, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957, 1100, 1101, 1102, 1103, 1104, 1105, 1106);
         echo "</select>
         <input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
@@ -327,7 +331,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "eventgarden":
         // Event-Acker
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateEventGardenOptions("pentecost1", "pentecost5", "pentecost2", "pentecost6", "pentecost3", "pentecost7", "pentecost4", "pentecost8", "waterbattle1", "waterbattle2", "waterbattle3", "waterbattle4", "waterbattle5", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame1", "tinkergame2", "tinkergame3", "tinkergame4", "tinkergame5", "tinkergame6", "invasion1", "invasion2", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5", "rainbowevent1", "rainbowevent2", "rainbowevent3", "rainbowevent4", "rainbowevent5", "collectevent1", "collectevent2", "collectevent3", "collectevent4", "collectevent5");
+        CreateEventGardenOptions("pentecost1", "pentecost5", "pentecost2", "pentecost6", "pentecost3", "pentecost7", "pentecost4", "pentecost8", "waterbattle1", "waterbattle2", "waterbattle3", "waterbattle4", "waterbattle5", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame7", "tinkergame1", "tinkergame8", "tinkergame2", "tinkergame9", "tinkergame3", "tinkergame10", "tinkergame4", "tinkergame11", "tinkergame5", "tinkergame12", "tinkergame6", "invasion1", "invasion2", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5", "rainbowevent1", "rainbowevent2", "rainbowevent3", "rainbowevent4", "rainbowevent5", "collectevent1", "collectevent2", "collectevent3", "collectevent4", "collectevent5");
         echo "</select>\n";
         break;
   default:
@@ -385,6 +389,7 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "trans27":
   case "trans28":
   case "trans29":
+  case "trans210":
 	$buildingType = "AutoTrans";
 	break;
   case "powerups":
