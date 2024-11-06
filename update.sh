@@ -128,7 +128,7 @@ cd
 echo "Updating My Free Farm Bash Bot..."
 rm -f master.zip 2>/dev/null
 rm -rf mffbashbot-master 2>/dev/null
-wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
+wget -nv "https://github.com/jbond47/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
 unzip -q master.zip

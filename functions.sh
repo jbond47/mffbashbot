@@ -2536,7 +2536,7 @@ function checkSendGoodsToMainFarm {
       iPIDMin=$(getConfigValue transO5)
       iPIDMax=$iPIDMin
      else
-      iPIDMin=351
+      iPIDMin=9
       iPIDMax=361
      fi
      ;;

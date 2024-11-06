@@ -13,6 +13,3 @@ Additional functions:
 - Autostart megafield
 
 - Autocheck flower farmies
-
-Changes:
-- Changed several game queries to prevent jq to crash under cygwin

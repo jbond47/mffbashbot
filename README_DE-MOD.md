@@ -13,6 +13,3 @@ Zusätzliche Funktionen:
 - Güterhof wird automatisch gestartet
 
 - Blumenfarmies automatisch bedienen
-
-Änderungen:
-- Anpassung diverser Spielabfragen, um einen Fehler in jq unter Cygwin zu umgehen.

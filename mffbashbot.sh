@@ -123,13 +123,13 @@ while (true); do
  fi
  if [ -f ../updateTrigger ]; then
   echo "Update trigger detected"
-  USCRIPTMD5ON=$(wget -T10 --no-check-certificate -qO - $USCRIPTURL | md5sum | awk '{ print $1 }')
+  USCRIPTMD5ON=$(wget -T10 -qO - $USCRIPTURL | md5sum | awk '{ print $1 }')
   USCRIPTMD5OFF=$(md5sum ../update.sh | awk '{ print $1 }')
   if [ -n "$USCRIPTMD5ON" ] && [ -n "$USCRIPTMD5OFF" ]; then
    if [ "$USCRIPTMD5ON" != "$USCRIPTMD5OFF" ] && [ "$USCRIPTMD5ON" != "d41d8cd98f00b204e9800998ecf8427e" ]; then
     # d41d8cd98f00b204e9800998ecf8427e would be an empty file
     echo "Replacing update script with newer version..."
-    wget -T10 --no-check-certificate -qO ../update.sh $USCRIPTURL
+    wget -T10 -qO ../update.sh $USCRIPTURL
     chmod +x ../update.sh
    fi
   fi
@@ -187,16 +187,16 @@ fi
 
  echo "Running My Free Farm Bash Bot (Mod) ${VERSION}-${VERSIONMOD}"
  echo "Getting a login token"
- MFFTOKEN=$(wget -nv --no-check-certificate -T10 -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
+ MFFTOKEN=$(wget -nv -T10 -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
  echo "Attempting to log in to MFF server ${MFFSERVER} with username $MFFUSER"
- wget -nv --no-check-certificate -T10 -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
+ wget -nv -T10 -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
  # get our RID
  RID=$(grep -om1 '[a-z0-9]\{32\}' $OUTFILE)
  # at least test if this was successful
  if [ -z "$RID" ]; then
   echo "FATAL: RID could not be retrieved. Pausing 5 minutes before next attempt..."
   # try and logoff.. just in case
-  wget -nv --no-check-certificate -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   rm -f "$STATUSFILE"
   sleep 5m
   continue

@@ -1,7 +1,7 @@
 My Free Farm Bash Bot *** MOD Version ***
 =========================================
 
-Schau in die README_DE-MOD.md https://github.com/jbond47/mffbashbot/blob/master/README_DE-MOD.md) für eine Liste von Änderungen dieser Mod Version.
+Schau in die README_DE-MOD.md https://github.com/jbond47/mffbashbot/blob/master/README_DE-MOD.md für eine Liste von Änderungen dieser Mod Version.
 
 English text further [down](#english)
 
@@ -26,7 +26,7 @@ Fragen und Kommentare richtet ihr bitte ans [Forum](http://myfreefarm-berater.fo
 ---
 ###### English
 
-See README-MOD.md https://github.com/jbond47/mffbashbot/blob/master/README-MOD.md) for a list of changes this mod includes.
+See README-MOD.md https://github.com/jbond47/mffbashbot/blob/master/README-MOD.md for a list of changes this mod includes.
 
 A bot for the browser game "My Free Farm".
 
